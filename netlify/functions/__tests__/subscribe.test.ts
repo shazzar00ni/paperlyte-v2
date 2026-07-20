@@ -5,7 +5,7 @@ const upsertMock = vi.fn();
 const fromMock = vi.fn(() => ({ upsert: upsertMock }));
 const getSupabaseClientMock = vi.fn();
 
-vi.mock("./utils/supabaseClient", () => ({
+vi.mock("../utils/supabaseClient", () => ({
   getSupabaseClient: () => getSupabaseClientMock(),
 }));
 
@@ -54,7 +54,7 @@ describe("subscribe handler", () => {
   }
 
   it("rejects a request with no name", async () => {
-    const { handler } = await import("./subscribe");
+    const { handler } = await import("../subscribe");
     const response = await handler(
       buildEvent({ email: "test@example.com" }),
       {} as never,
@@ -65,7 +65,7 @@ describe("subscribe handler", () => {
   });
 
   it("rejects a request with a too-short name", async () => {
-    const { handler } = await import("./subscribe");
+    const { handler } = await import("../subscribe");
     const response = await handler(
       buildEvent({ name: "A", email: "test@example.com" }),
       {} as never,
@@ -76,7 +76,7 @@ describe("subscribe handler", () => {
   });
 
   it("rejects a request with an invalid email", async () => {
-    const { handler } = await import("./subscribe");
+    const { handler } = await import("../subscribe");
     const response = await handler(
       buildEvent({ name: "Ada Lovelace", email: "not-an-email" }),
       {} as never,
@@ -89,7 +89,7 @@ describe("subscribe handler", () => {
     await mockConvertKitSuccess();
     getSupabaseClientMock.mockReturnValue(null);
 
-    const { handler } = await import("./subscribe");
+    const { handler } = await import("../subscribe");
     const response = await handler(
       buildEvent({ name: "Ada Lovelace", email: "test@example.com" }),
       {} as never,
@@ -105,7 +105,7 @@ describe("subscribe handler", () => {
     await mockConvertKitSuccess();
     getSupabaseClientMock.mockReturnValue({ from: fromMock });
 
-    const { handler } = await import("./subscribe");
+    const { handler } = await import("../subscribe");
     const response = await handler(
       buildEvent({ name: "  Ada Lovelace  ", email: "  Test@Example.com " }),
       {} as never,
@@ -125,7 +125,7 @@ describe("subscribe handler", () => {
     upsertMock.mockResolvedValue({ error: { message: "boom" } });
     getSupabaseClientMock.mockReturnValue({ from: fromMock });
 
-    const { handler } = await import("./subscribe");
+    const { handler } = await import("../subscribe");
     const response = await handler(
       buildEvent({ name: "Ada Lovelace", email: "test@example.com" }),
       {} as never,
@@ -139,7 +139,7 @@ describe("subscribe handler", () => {
     global.fetch = vi.fn().mockResolvedValue({ ok: false, status: 500 }) as unknown as typeof fetch;
     getSupabaseClientMock.mockReturnValue({ from: fromMock });
 
-    const { handler } = await import("./subscribe");
+    const { handler } = await import("../subscribe");
     const response = await handler(
       buildEvent({ name: "Ada Lovelace", email: "test@example.com" }),
       {} as never,

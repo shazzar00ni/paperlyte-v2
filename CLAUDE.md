@@ -119,8 +119,8 @@ The application mounts at `<div id="root">` in index.html and renders the App co
 
 ### Visual Identity
 
-- **Color Palette**: Sophisticated monochrome aesthetic with near-black (#1a1a1a) and pure white (#ffffff)
-- **Typography**: Dual font system - Inter (sans-serif) for UI/body text, Playfair Display (serif) for headlines
+- **Color Palette**: Warm monochrome "Editorial" aesthetic with warm near-black (#14110f) and warm off-white (#fcfcfa) — inverts in dark mode
+- **Typography**: Dual font system - Instrument Sans (sans-serif) for UI/body text, Playfair Display (serif, with a true italic face) for headlines
 - **Buttons**: Pill-shaped (border-radius: 9999px) for a modern, friendly appearance
 - **Iconography**: Font Awesome icons with consistent sizing and spacing
 - **Animation**: Subtle, performance-optimized, respectful of motion preferences (`prefers-reduced-motion`)
@@ -155,8 +155,8 @@ Interpret creatively and make unexpected choices that feel genuinely designed fo
 
 ### Key Design Features
 
-- **Monochrome Palette**: Black/white design inverts in dark mode (white becomes primary)
-- **Serif Headlines**: Large Playfair Display headlines with italic emphasis
+- **Warm Monochrome Palette**: Near-black/off-white design inverts in dark mode (off-white becomes primary)
+- **Serif Headlines**: Large Playfair Display headlines with true italic emphasis
 - **Pill Buttons**: All buttons use full border-radius for signature look
 - **Hero Parallax**: Subtle background shapes with blur effects
 - **Floating Elements**: Animated icons and decorative elements (hidden on mobile)

@@ -7,8 +7,8 @@
 }
 
 @font-face {
-  font-family: 'Inter';
-  src: url('/fonts/Inter-Variable-v2.woff2') format('woff2');
+  font-family: 'Instrument Sans';
+  src: url('/fonts/Instrument-Sans-Variable.woff2') format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -23,22 +23,22 @@
 }
 
 :root {
-  --bg: #0e0e0e;
-  --fg: #ffffff;
-  --muted: #888888;
-  --border: rgba(255, 255, 255, 0.08);
-  --btn-bg: #ffffff;
-  --btn-fg: #0e0e0e;
+  --bg: #14110f;
+  --fg: #fcfcfa;
+  --muted: #8f897e;
+  --border: rgba(252, 252, 250, 0.08);
+  --btn-bg: #fcfcfa;
+  --btn-fg: #14110f;
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    --bg: #f7f6f3;
-    --fg: #1a1a1a;
-    --muted: #666666;
-    --border: rgba(0, 0, 0, 0.08);
-    --btn-bg: #1a1a1a;
-    --btn-fg: #ffffff;
+    --bg: #fcfcfa;
+    --fg: #14110f;
+    --muted: #6f685e;
+    --border: rgba(20, 17, 15, 0.08);
+    --btn-bg: #14110f;
+    --btn-fg: #fcfcfa;
   }
 }
 
@@ -50,7 +50,7 @@ body {
 body {
   background: var(--bg);
   color: var(--fg);
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
   display: grid;
   place-items: center;
   padding: 2rem;

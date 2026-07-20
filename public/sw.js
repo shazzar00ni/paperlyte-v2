@@ -8,7 +8,7 @@
 // old runtime code with a new shell before activation handoff completes.
 // onActivate then deletes every cache whose name differs from this value,
 // so old caches are cleaned up once the new SW takes over.
-const CACHE_VERSION = 'paperlyte-v2'
+const CACHE_VERSION = 'paperlyte-v3'
 const OFFLINE_PAGE = '/offline.html'
 
 // Pre-cache these on install so offline fallback is always available
@@ -18,8 +18,9 @@ const PRECACHE = [
   '/offline.css',
   '/offline.js',
   '/site.webmanifest',
-  '/fonts/Inter-Variable-v2.woff2',
+  '/fonts/Instrument-Sans-Variable.woff2',
   '/fonts/PlayfairDisplay-Variable.woff2',
+  '/fonts/PlayfairDisplay-Italic-Variable.woff2',
 ]
 
 // Maximum number of content-hashed /assets/* entries to retain per cache version.

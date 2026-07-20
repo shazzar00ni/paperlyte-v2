@@ -231,12 +231,12 @@ function EmailCapture() {
 - Include dark mode support with `prefers-color-scheme` media query
 - Use modern units (rem, vh, vw) instead of pixels
 - Respect `prefers-reduced-motion` for all animations
-- Follow the monochrome design aesthetic (near-black #1a1a1a and white #ffffff)
+- Follow the warm monochrome "Editorial" aesthetic (near-black #14110f and off-white #fcfcfa)
 
 **Font System**:
 
-- **UI/Body**: Inter (via @fontsource/inter)
-- **Headlines**: Playfair Display (self-hosted variable font)
+- **UI/Body**: Instrument Sans (self-hosted variable font)
+- **Headlines**: Playfair Display (self-hosted variable font, with a true italic face)
 - Icons: Font Awesome (via @fortawesome packages)
 
 ## File Structure
@@ -792,14 +792,14 @@ function Features() {
 ### Fonts and Icons
 
 - **All assets are self-hosted** (no external CDNs)
-- Fonts: @fontsource/inter package for UI text
+- Fonts: self-hosted Instrument Sans + Playfair Display variable fonts (`public/fonts/`)
 - Icons: @fortawesome packages (not CDN)
 - This is critical for CSP compliance and performance
 
 ### Design Philosophy
 
-- Monochrome aesthetic: near-black (#1a1a1a) and white (#ffffff)
-- Dual typography: Inter for UI, Playfair Display for headlines
+- Warm monochrome "Editorial" aesthetic: near-black (#14110f) and off-white (#fcfcfa)
+- Dual typography: Instrument Sans for UI, Playfair Display (with true italic) for headlines
 - Pill-shaped buttons (border-radius: 9999px)
 - Subtle animations with motion preferences respected
 - Mobile-first responsive design

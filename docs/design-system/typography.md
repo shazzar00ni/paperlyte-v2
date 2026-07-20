@@ -15,16 +15,16 @@ font-family: 'Playfair Display', serif;
 - **Role:** All headings (h1–h6), section titles, pull quotes
 - **Weights used:** Bold (700), occasionally ExtraBold (800) for hero headlines
 - **Style notes:** Italic variants are encouraged for emphasis phrases within headlines — they add warmth and editorial feel without requiring colour
-- **Source:** Self-hosted variable font at `/fonts/PlayfairDisplay-Variable.woff2`
+- **Source:** Self-hosted variable fonts — normal at `/fonts/PlayfairDisplay-Variable.woff2`, true italic at `/fonts/PlayfairDisplay-Italic-Variable.woff2` (both registered as the same `'Playfair Display'` family with `font-style: normal` / `italic`, so `<em>` and `font-style: italic` render true italic glyphs rather than a browser-synthesized slant)
 - **Font display:** `swap` — body text renders first; Playfair Display swaps in
 
 **Why Playfair Display?** It evokes the tactile quality of paper and print — reinforcing "Paperlyte" as a product that feels like writing on a premium surface. Its high contrast strokes feel fast and sharp at large sizes.
 
-### Inter — UI and Body
+### Instrument Sans — UI and Body
 
 ```css
 font-family:
-  'Inter',
+  'Instrument Sans',
   system-ui,
   -apple-system,
   BlinkMacSystemFont,
@@ -34,7 +34,7 @@ font-family:
 
 - **Role:** All body copy, UI labels, buttons, navigation, metadata
 - **Weights used:** Normal (400), Medium (500), Semibold (600), Bold (700)
-- **Source:** Self-hosted variable font at `/fonts/Inter-Variable.woff2`
+- **Source:** Self-hosted variable font at `/fonts/Instrument-Sans-Variable.woff2`
 - **Font display:** `swap`
 
 The system-font fallback stack (`system-ui, -apple-system…`) ensures zero-flash, accessible rendering before the font loads. The design is tuned to look acceptable in system fonts.
@@ -139,7 +139,7 @@ p {
 }
 ```
 
-Body paragraphs use `--color-text-secondary` (#6b7280) by default — this subtle grey keeps long-form text comfortable to read without competing with headline hierarchy. For higher-emphasis body copy, apply `color: var(--color-text-primary)` explicitly.
+Body paragraphs use `--color-text-secondary` (#57524b) by default — this subtle grey keeps long-form text comfortable to read without competing with headline hierarchy. For higher-emphasis body copy, apply `color: var(--color-text-primary)` explicitly.
 
 ---
 
@@ -200,7 +200,7 @@ Small all-caps labels above section headlines:
 
 ```css
 .eyebrow {
-  font-family: var(--font-family); /* Inter */
+  font-family: var(--font-family); /* Instrument Sans */
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   letter-spacing: 0.1em;
@@ -252,5 +252,5 @@ Feature metrics displayed in large Playfair Display numerals:
 | Raw pixel values (`font-size: 14px`)                   | Prevents user browser font-size scaling         |
 | `text-align: justify`                                  | Harms readability for dyslexic users            |
 | Playfair Display for body copy                         | Not optimised for small sizes; harms legibility |
-| Inter for primary headlines                            | Lacks the editorial weight the brand requires   |
-| `letter-spacing` on lowercase body copy                | Impairs readability of Inter at normal sizes    |
+| Instrument Sans for primary headlines                            | Lacks the editorial weight the brand requires   |
+| `letter-spacing` on lowercase body copy                | Impairs readability of Instrument Sans at normal sizes    |

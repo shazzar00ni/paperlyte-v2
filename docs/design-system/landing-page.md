@@ -85,11 +85,11 @@ Mobile:
 | Element          | Content                                         | Typography                                     |
 | ---------------- | ----------------------------------------------- | ---------------------------------------------- |
 | H1               | "Your thoughts, _organized._"                   | Playfair Display 5xl, bold, italic on emphasis |
-| Subheading       | "The minimal workspace for busy professionals." | Inter base, `--color-text-secondary`           |
+| Subheading       | "The minimal workspace for busy professionals." | Instrument Sans base, `--color-text-secondary`           |
 | CTA (primary)    | "Start Writing for Free"                        | Button large primary + arrow-right icon        |
 | CTA (secondary)  | "View the Demo"                                 | Button large secondary                         |
-| Trusted by label | "TRUSTED BY TEAMS AT"                           | Inter xs, semibold, uppercase, letter-spacing  |
-| Company list     | Acme Corp, Global, Nebula, Vertex, Horizon      | Inter sm, `--color-text-secondary`             |
+| Trusted by label | "TRUSTED BY TEAMS AT"                           | Instrument Sans xs, semibold, uppercase, letter-spacing  |
+| Company list     | Acme Corp, Global, Nebula, Vertex, Horizon      | Instrument Sans sm, `--color-text-secondary`             |
 
 ### Mockup
 
@@ -143,8 +143,8 @@ Feature data lives in `src/constants/features.ts`. Each card contains:
 | ------------ | --------------------------------------------------------------------------------- |
 | Icon         | `Icon` component, size `2x`, `color: var(--color-primary)`                        |
 | Icon wrapper | `64px` circle, `--color-primary-faint` background                                 |
-| Title (h3)   | Inter semibold, `--font-size-xl`                                                  |
-| Description  | Inter normal, `--font-size-base`, `--color-text-secondary`, `line-height-relaxed` |
+| Title (h3)   | Playfair Display semibold (inherited from the global `h3` rule), `--font-size-xl`           |
+| Description  | Instrument Sans normal, `--font-size-base`, `--color-text-secondary`, `line-height-relaxed` |
 
 ### Section Header
 
@@ -290,8 +290,8 @@ Horizontal scrolling card list or auto-advancing carousel. 3 visible on desktop,
 | -------------- | --------------------------------------------------------------------- |
 | Quote          | Playfair Display italic, `font-size-xl`, `--color-text-primary`       |
 | Avatar         | 48×48px circle image                                                  |
-| Name           | Inter semibold, `font-size-base`                                      |
-| Role / Company | Inter normal, `font-size-sm`, `--color-text-secondary`                |
+| Name           | Instrument Sans semibold, `font-size-base`                                      |
+| Role / Company | Instrument Sans normal, `font-size-sm`, `--color-text-secondary`                |
 | Quote marks    | Decorative `"` in Playfair Display, `font-size-5xl`, `--color-border` |
 
 ---

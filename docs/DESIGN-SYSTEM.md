@@ -1,9 +1,9 @@
 # Paperlyte Design System
 
-> **Version:** 2.2.0
-> **Last Updated:** June 25, 2026
+> **Version:** 2.3.0
+> **Last Updated:** July 18, 2026
 
-A comprehensive design system for Paperlyte - a lightning-fast, distraction-free note-taking application that prioritizes simplicity and performance through a sophisticated monochrome aesthetic with near-black (#1a1a1a) and pure white (#ffffff) as the primary palette.
+A comprehensive design system for Paperlyte - a lightning-fast, distraction-free note-taking application that prioritizes simplicity and performance through a sophisticated warm monochrome aesthetic with near-black (#14110f) and off-white (#fcfcfa) as the primary palette.
 
 ---
 
@@ -46,24 +46,24 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 
 ## Color Palette
 
-**Design Philosophy:** Paperlyte uses a sophisticated monochrome palette — near-black (#1a1a1a) in light mode, pure white (#ffffff) in dark mode — as the primary brand color. This inverted approach creates a clean, paper-like aesthetic that reinforces the writing-focused product. High contrast neutrals ensure maximum readability.
+**Design Philosophy:** Paperlyte uses a warm monochrome palette — warm near-black (#14110f) in light mode, warm off-white (#fcfcfa) in dark mode — as the primary brand color. This inverted approach creates a clean, paper-like aesthetic that reinforces the writing-focused product. The warm undertone (vs. neutral gray) reads as more tactile and less generic than pure black/white. High contrast neutrals ensure maximum readability.
 
 ### Primary Colors
 
 ```css
 /* Light Mode */
---color-primary: #1a1a1a;                    /* Near black - Main brand color */
---color-primary-dark: #000000;               /* Pure black - Hover states */
---color-primary-light: #333333;              /* Dark gray - Accents */
---color-primary-faint: rgba(26, 26, 26, 0.1);  /* 10% opacity for backgrounds */
---color-primary-fainter: rgba(26, 26, 26, 0.05); /* 5% opacity for subtle backgrounds */
+--color-primary: #14110f;                       /* Warm near-black - Main brand color */
+--color-primary-dark: #050403;                  /* Deeper black - Hover states */
+--color-primary-light: #3a352e;                 /* Warm dark gray - Accents */
+--color-primary-faint: rgba(20, 17, 15, 0.08);  /* 8% opacity for backgrounds */
+--color-primary-fainter: rgba(20, 17, 15, 0.04); /* 4% opacity for subtle backgrounds */
 ```
 
 #### Color Usage
 
-- **Primary (#1a1a1a)** - CTAs, primary buttons, links, interactive elements
-- **Primary Dark (#000000)** - Hover states on primary elements
-- **Primary Light (#333333)** - Subtle accents, secondary highlights
+- **Primary (#14110f)** - CTAs, primary buttons, links, interactive elements
+- **Primary Dark (#050403)** - Hover states on primary elements
+- **Primary Light (#3a352e)** - Subtle accents, secondary highlights
 - **Primary Faint** - Background tints for focus states, subtle backgrounds
 - **Primary Fainter** - Very subtle backgrounds, hover states
 
@@ -71,41 +71,41 @@ A comprehensive design system for Paperlyte - a lightning-fast, distraction-free
 
 ```css
 /* Light Mode */
---color-background: #ffffff;  /* Pure white - Main background */
---color-surface: #f9fafb;     /* Gray 50 - Card backgrounds */
---color-surface-dark: #18181b; /* Zinc 900 - Dark surface sections (e.g. inverted CTA) */
---color-text-primary: #111827; /* Gray 900 - Headings, body text */
---color-text-secondary: #6b7280; /* Gray 500 - Supporting text */
---color-text-tertiary: #737373;  /* Neutral 500 - Muted text (WCAG AA 4.5:1 on white) */
---color-text-on-primary: #ffffff; /* White text on dark primary backgrounds */
---color-text-on-dark: #ffffff;    /* White text on dark surfaces */
---color-text-on-dark-secondary: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
---color-border: #e5e7eb;       /* Gray 200 - Borders, dividers */
---color-border-light: #f3f4f6; /* Gray 100 - Subtle borders */
+--color-background: #fcfcfa;  /* Warm off-white - Main background */
+--color-surface: #f4f2ec;     /* Warm paper - Card backgrounds */
+--color-surface-dark: #14110f; /* Warm near-black - Dark surface sections (e.g. inverted CTA) */
+--color-text-primary: #14110f; /* Warm near-black - Headings, body text */
+--color-text-secondary: #57524b; /* Warm gray - Supporting text */
+--color-text-tertiary: #6f685e;  /* Warm taupe - Muted text (WCAG AA 4.5:1 on background) */
+--color-text-on-primary: #fcfcfa; /* Off-white text on dark primary backgrounds */
+--color-text-on-dark: #fcfcfa;    /* Off-white text on dark surfaces */
+--color-text-on-dark-secondary: rgba(252, 252, 250, 0.72); /* Semi-transparent off-white */
+--color-border: #e2dfd6;       /* Warm hairline - Borders, dividers */
+--color-border-light: #ecebe3; /* Warm hairline - Subtle borders */
 ```
 
 ### Dark Mode Colors
 
-**Dark Mode Philosophy:** In dark mode, the primary color inverts to pure white (#ffffff), maintaining the monochrome brand identity while providing a comfortable low-light experience. The dark background shifts to Slate 900.
+**Dark Mode Philosophy:** In dark mode, the primary color inverts to warm off-white (#fcfcfa), maintaining the monochrome brand identity while providing a comfortable low-light experience. The dark background shifts to warm near-black (#14110f) — the same hue family as the light-mode primary, not a blue-tinted slate.
 
 ```css
 /* Dark Mode */
---color-primary: #ffffff;      /* Pure white - Primary in dark mode */
---color-primary-dark: #f1f5f9; /* Slate 100 - Hover states */
---color-primary-light: #e2e8f0; /* Slate 200 - Accents */
---color-primary-faint: rgba(255, 255, 255, 0.1);  /* 10% opacity for backgrounds */
---color-primary-fainter: rgba(255, 255, 255, 0.05); /* 5% opacity for subtle backgrounds */
---color-background: #0f172a;   /* Slate 900 - Dark background */
---color-surface: #1e293b;      /* Slate 800 - Card backgrounds */
---color-surface-dark: #0f172a; /* Slate 900 - Dark sections */
---color-text-primary: #f1f5f9; /* Slate 100 - Light text */
---color-text-secondary: #94a3b8; /* Slate 400 - Supporting text */
---color-text-tertiary: #64748b;  /* Slate 500 - Muted text */
---color-text-on-primary: #000000; /* Black text on white primary (dark mode) */
---color-text-on-dark: #ffffff;
---color-text-on-dark-secondary: rgba(255, 255, 255, 0.7);
---color-border: #334155;       /* Slate 700 - Borders */
---color-border-light: #1e293b; /* Slate 800 - Subtle borders */
+--color-primary: #fcfcfa;      /* Warm off-white - Primary in dark mode */
+--color-primary-dark: #f1efe9; /* Dimmer off-white - Hover states */
+--color-primary-light: #e6e3dc; /* Warm light gray - Accents */
+--color-primary-faint: rgba(252, 252, 250, 0.1);  /* 10% opacity for backgrounds */
+--color-primary-fainter: rgba(252, 252, 250, 0.05); /* 5% opacity for subtle backgrounds */
+--color-background: #14110f;   /* Warm near-black - Dark background */
+--color-surface: #201c18;      /* Warm dark surface - Card backgrounds */
+--color-surface-dark: #0a0806; /* Deepest warm surface - Dark sections */
+--color-text-primary: #f5f3ee; /* Warm off-white - Light text */
+--color-text-secondary: #a69f92; /* Warm light gray - Supporting text */
+--color-text-tertiary: #8f897e;  /* Warm taupe - Muted text */
+--color-text-on-primary: #14110f; /* Warm near-black text on off-white primary (dark mode) */
+--color-text-on-dark: #fcfcfa;
+--color-text-on-dark-secondary: rgba(252, 252, 250, 0.72);
+--color-border: #33302a;       /* Warm dark border */
+--color-border-light: #24211c; /* Warm subtle border */
 ```
 
 ### WCAG Compliance Matrix
@@ -115,41 +115,41 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 #### Primary Color Combinations (Light Mode)
 
 | Foreground                   | Background             | Contrast Ratio | WCAG Level | Use Case                         |
-| ---------------------------- | ---------------------- | -------------- | ---------- | -------------------------------- |
-| `#111827` (Text Primary)     | `#FFFFFF` (Background) | 16.1:1         | AAA        | Body text (light mode)           |
-| `#6B7280` (Text Secondary)   | `#FFFFFF` (Background) | 4.6:1          | AA         | Supporting text (light mode)     |
-| `#737373` (Text Tertiary)    | `#FFFFFF` (Background) | 4.5:1          | AA         | Muted text (light mode)          |
-| `#1A1A1A` (Primary)          | `#FFFFFF` (Background) | 18.1:1         | AAA        | Buttons, interactive elements    |
-| `#FFFFFF` (Text on Primary)  | `#1A1A1A` (Primary)    | 18.1:1         | AAA        | Text on dark primary buttons     |
-| `#000000` (Primary Dark)     | `#FFFFFF` (Background) | 21:1           | AAA        | Hover states (max contrast)      |
+| ----------------------------- | ----------------------- | -------------- | ---------- | -------------------------------- |
+| `#14110F` (Text Primary)     | `#FCFCFA` (Background) | 18.3:1         | AAA        | Body text (light mode)           |
+| `#57524B` (Text Secondary)   | `#FCFCFA` (Background) | 7.5:1          | AAA        | Supporting text (light mode)     |
+| `#6F685E` (Text Tertiary)    | `#FCFCFA` (Background) | 5.4:1          | AA         | Muted text (light mode)          |
+| `#14110F` (Primary)          | `#FCFCFA` (Background) | 18.3:1         | AAA        | Buttons, interactive elements    |
+| `#FCFCFA` (Text on Primary)  | `#14110F` (Primary)    | 18.3:1         | AAA        | Text on dark primary buttons     |
+| `#050403` (Primary Dark)     | `#FCFCFA` (Background) | 19.9:1         | AAA        | Hover states (max contrast)      |
 
 #### Primary Color Combinations (Dark Mode)
 
 | Foreground                   | Background             | Contrast Ratio | WCAG Level | Use Case                          |
-| ---------------------------- | ---------------------- | -------------- | ---------- | --------------------------------- |
-| `#F1F5F9` (Text Primary)     | `#0F172A` (Background) | 15.8:1         | AAA        | Body text (dark mode)             |
-| `#94A3B8` (Text Secondary)   | `#0F172A` (Background) | 7.2:1          | AAA        | Supporting text (dark mode)       |
-| `#FFFFFF` (Primary)          | `#0F172A` (Background) | 19.6:1         | AAA        | Buttons, interactive (dark mode)  |
-| `#000000` (Text on Primary)  | `#FFFFFF` (Primary)    | 21:1           | AAA        | Text on white primary (dark mode) |
-| `#FFFFFF` (Text)             | `#1E293B` (Surface)    | 14.8:1         | AAA        | Text on surface (dark mode)       |
+| ----------------------------- | ----------------------- | -------------- | ---------- | ---------------------------------- |
+| `#F5F3EE` (Text Primary)     | `#14110F` (Background) | 17.0:1         | AAA        | Body text (dark mode)             |
+| `#A69F92` (Text Secondary)   | `#14110F` (Background) | 7.2:1          | AAA        | Supporting text (dark mode)       |
+| `#FCFCFA` (Primary)          | `#14110F` (Background) | 18.3:1         | AAA        | Buttons, interactive (dark mode)  |
+| `#14110F` (Text on Primary)  | `#FCFCFA` (Primary)    | 18.3:1         | AAA        | Text on off-white primary (dark mode) |
+| `#F5F3EE` (Text)             | `#201C18` (Surface)    | 15.3:1         | AAA        | Text on surface (dark mode)       |
 
 #### Semantic Color Combinations
 
 | Foreground               | Background             | Contrast Ratio | WCAG Level | Use Case                               |
-| ------------------------ | ---------------------- | -------------- | ---------- | -------------------------------------- |
-| `#22c55e` (Success)      | `#FFFFFF` (Background) | 3.1:1          | AA\*       | Success icons/badges (large text only) |
-| `#dc2626` (Error)        | `#FFFFFF` (Background) | 5.9:1          | AA         | Error messages, alerts                 |
-| `#4ade80` (Success Dark) | `#0F172A` (Background) | 4.2:1          | AA\*       | Success states (dark mode, large text) |
-| `#f87171` (Error Dark)   | `#0F172A` (Background) | 4.8:1          | AA         | Error states (dark mode)               |
+| ------------------------- | ----------------------- | -------------- | ---------- | --------------------------------------- |
+| `#22c55e` (Success)      | `#FCFCFA` (Background) | 2.2:1          | Fail\*\*   | Success icon glyphs only — never text or badges |
+| `#dc2626` (Error)        | `#FCFCFA` (Background) | 4.7:1          | AA         | Error messages, alerts                 |
+| `#4ade80` (Success Dark) | `#14110F` (Background) | 10.8:1         | AAA        | Success states (dark mode)             |
+| `#f87171` (Error Dark)   | `#14110F` (Background) | 6.8:1          | AA         | Error states (dark mode)               |
 
 **Notes:**
 
-- AA\* = Meets AA standards for large text (18pt/14pt bold) and UI components (3:1 minimum)
 - Normal text requires 4.5:1 contrast (AA) or 7:1 (AAA)
 - Large text and UI components require 3:1 contrast (AA)
-- The monochrome primary (#1a1a1a / #ffffff) provides extremely high contrast (18:1+) — use freely for all text sizes
-- `--color-text-tertiary` was raised from #9ca3af (~2.85:1) to #737373 (~4.5:1) to meet WCAG AA for normal text
+- The monochrome primary (#14110f / #fcfcfa) provides extremely high contrast (18:1+) — use freely for all text sizes
+- `--color-text-tertiary` (#6f685e light / #8f897e dark) meets WCAG AA (4.5:1+) on both `--color-background` and `--color-surface` in its theme
 - Contrast ratios calculated using WCAG 2.1 relative luminance formula
+- \*\* `--color-success` (#22c55e) does not reach the 3:1 UI-component minimum on the light background (2.2:1) — it fails for badges, borders, and any UI-component use, not just text. Use it only as a decorative accent on an icon glyph (e.g. a filled checkmark), always paired with descriptive text in `--color-text-primary`, not as a standalone status indicator
 - Semantic colors (success, error) are always paired with icons and descriptive text for accessibility
 
 **Testing Tools:**
@@ -164,7 +164,7 @@ All colors have been tested for WCAG 2.1 compliance. The table below shows key c
 
 ```css
 /* Primary Button Hover */
-background-color: var(--color-primary-dark); /* #000000 (light) / #f1f5f9 (dark) */
+background-color: var(--color-primary-dark); /* #050403 (light) / #f1efe9 (dark) */
 transform: translateY(-1px);
 box-shadow: var(--shadow-md);
 
@@ -196,9 +196,9 @@ cursor: not-allowed;
 
 ✅ **DO:**
 
-- Use primary color (#1a1a1a / #ffffff) for CTAs and important interactive elements
+- Use primary color (#14110f / #fcfcfa) for CTAs and important interactive elements
 - Leverage the high contrast of the monochrome palette for readability
-- Use text-secondary (#6B7280) for supporting information
+- Use text-secondary (#57524B) for supporting information
 - Test colors in both light and dark modes
 - Use `--color-text-tertiary` for truly muted/metadata text
 
@@ -285,16 +285,16 @@ import styles from './Alert.module.css'
 
 ## Typography
 
-**Typography Philosophy:** Paperlyte uses a dual-font system. Inter (variable, sans-serif) handles UI components, body text, navigation, and buttons. Playfair Display (variable, serif) is used for all headings (h1–h6), giving editorial weight to headlines while keeping the interface clean.
+**Typography Philosophy:** Paperlyte uses a dual-font system. Instrument Sans (variable, sans-serif) handles UI components, body text, navigation, and buttons. Playfair Display (variable, serif) is used for all headings (h1–h6), giving editorial weight to headlines while keeping the interface clean.
 
 ### Font Families
 
 ```css
---font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+--font-family: 'Instrument Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 --font-family-serif: 'Playfair Display', Georgia, serif;
 ```
 
-**Primary (UI/body):** Inter (Variable Font, weight 100–900) — clean, readable sans-serif for body text, buttons, nav, labels
+**Primary (UI/body):** Instrument Sans (Variable Font, weight 400–700) — clean, readable sans-serif for body text, buttons, nav, labels
 **Display (headings):** Playfair Display (Variable Font, weight 400–900) — applied to all `h1`–`h6` elements globally via `typography.css`
 **Fallback:** System fonts for fast loading and graceful degradation
 
@@ -302,11 +302,11 @@ import styles from './Alert.module.css'
 
 ```css
 @font-face {
-  font-family: 'Inter';
+  font-family: 'Instrument Sans';
   font-style: normal;
-  font-weight: 100 900;
+  font-weight: 400 700;
   font-display: swap;
-  src: url('/fonts/Inter-Variable-v2.woff2') format('woff2-variations');
+  src: url('/fonts/Instrument-Sans-Variable.woff2') format('woff2-variations');
 }
 
 @font-face {
@@ -316,11 +316,19 @@ import styles from './Alert.module.css'
   font-display: swap;
   src: url('/fonts/PlayfairDisplay-Variable.woff2') format('woff2-variations');
 }
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('/fonts/PlayfairDisplay-Italic-Variable.woff2') format('woff2-variations');
+}
 ```
 
 **Font Usage Guidelines:**
 
-- **Inter**: UI text — navigation, buttons, body paragraphs, labels, captions, form elements
+- **Instrument Sans**: UI text — navigation, buttons, body paragraphs, labels, captions, form elements
 - **Playfair Display**: All semantic headings (h1–h6), applied automatically via global `typography.css`
 
 ### Type Scale
@@ -439,7 +447,7 @@ import styles from './Component.module.css'
   line-height: var(--line-height-tight); /* 1.25 */
 }
 
-/* UI text uses Inter (the default --font-family) */
+/* UI text uses Instrument Sans (the default --font-family) */
 .label {
   font-family: var(--font-family);
   font-size: var(--font-size-sm);
@@ -460,14 +468,14 @@ import styles from './Component.module.css'
 ✅ **DO:**
 
 - Use Playfair Display (`--font-family-serif`) for headings and display text
-- Use Inter (`--font-family`) for body copy, UI elements, and navigation
+- Use Instrument Sans (`--font-family`) for body copy, UI elements, and navigation
 - Use semantic HTML headings (h1-h6) in hierarchical order — they get Playfair Display automatically
 - Use relaxed line-height (1.75) for body text
 - Limit line length to 60-80 characters for readability
 
 ❌ **DON'T:**
 
-- Use Inter for large headline text (it will lose the editorial feel)
+- Use Instrument Sans for large headline text (it will lose the editorial feel)
 - Use Playfair Display for small UI elements, buttons, or captions
 - Skip heading levels (h1 → h3)
 - Use font sizes smaller than 12px (--font-size-xs)
@@ -1966,8 +1974,8 @@ All components must meet WCAG 2.1 AA standards:
 
 ```css
 .primary {
-  background-color: var(--color-primary); /* #1a1a1a light / #ffffff dark */
-  color: var(--color-text-on-primary); /* #ffffff light / #000000 dark */
+  background-color: var(--color-primary); /* #14110f light / #fcfcfa dark */
+  color: var(--color-text-on-primary); /* #fcfcfa light / #14110f dark */
   border: 1px solid transparent;
   border-radius: var(--border-radius-full); /* 9999px - pill shape */
   min-height: 44px;
@@ -1975,7 +1983,7 @@ All components must meet WCAG 2.1 AA standards:
 }
 
 .primary:hover {
-  background-color: var(--color-primary-dark); /* #000000 light / #f1f5f9 dark */
+  background-color: var(--color-primary-dark); /* #050403 light / #f1efe9 dark */
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
@@ -3336,43 +3344,44 @@ Always respect `prefers-reduced-motion`:
 
 ## Design Tokens (Tailwind Config Ready)
 
-**Note:** This project uses **CSS Custom Properties** for dynamic theming (see src/styles/variables.css). Dark mode is handled automatically via CSS variables that respond to `[data-theme='dark']` and `@media (prefers-color-scheme: dark)`.
+**Note:** This project uses **CSS Custom Properties** for dynamic theming (see src/styles/variables.css) and **CSS Modules** for component styles. Tailwind CSS is **not used and must not be added** — see `AGENTS.md`. Dark mode is handled automatically via CSS variables that respond to `[data-theme='dark']` and `@media (prefers-color-scheme: dark)`.
 
-If you prefer to use Tailwind's built-in dark mode instead, here's the configuration:
+> **Reference only — not an implementation path.** The Tailwind config below exists purely as an equivalent token mapping for teams porting this palette to a Tailwind-based project. It documents the same values as `variables.css` in a different format; it is not wired into this codebase and should not be copied in.
 
 ```js
-// tailwind.config.js
+// tailwind.config.js — reference only, do not add to this repo
 module.exports = {
   darkMode: 'class', // or 'media' for automatic system preference
   theme: {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#1a1a1a',                    // Near black (light mode)
-          dark: '#000000',                         // Pure black - hover
-          light: '#333333',                        // Dark gray - accents
-          faint: 'rgba(26, 26, 26, 0.1)',
-          fainter: 'rgba(26, 26, 26, 0.05)',
+          DEFAULT: '#14110f',                    // Warm near-black (light mode)
+          dark: '#050403',                         // Deeper black - hover
+          light: '#3a352e',                        // Warm dark gray - accents
+          faint: 'rgba(20, 17, 15, 0.08)',
+          fainter: 'rgba(20, 17, 15, 0.04)',
         },
         background: {
-          DEFAULT: '#FFFFFF',
-          dark: '#0F172A',   // Slate 900 (dark mode)
+          DEFAULT: '#FCFCFA',
+          dark: '#14110F',   // Warm near-black (dark mode)
         },
         surface: {
-          DEFAULT: '#F9FAFB',
-          'surface-dark': '#18181B', // Zinc 900 - dark accent sections
-          dark: '#1E293B',           // Slate 800 (dark mode)
+          DEFAULT: '#F4F2EC',
+          'surface-dark': '#14110F', // Warm near-black - dark accent sections
+          dark: '#201C18',           // Warm dark surface (dark mode)
         },
         text: {
-          primary: '#111827',
-          secondary: '#6B7280',
-          tertiary: '#737373',       // Neutral 500 - muted (WCAG AA)
-          'on-dark': '#FFFFFF',
-          'on-dark-secondary': 'rgba(255,255,255,0.7)',
+          primary: { DEFAULT: '#14110f', dark: '#F5F3EE' },
+          secondary: { DEFAULT: '#57524B', dark: '#A69F92' },
+          tertiary: { DEFAULT: '#6F685E', dark: '#8F897E' }, // Warm taupe - muted (WCAG AA)
+          'on-primary': { DEFAULT: '#FCFCFA', dark: '#14110F' },
+          'on-dark': '#FCFCFA',
+          'on-dark-secondary': 'rgba(252,252,250,0.72)',
         },
         border: {
-          DEFAULT: '#E5E7EB',
-          light: '#F3F4F6',          // Subtle borders
+          DEFAULT: '#E2DFD6',
+          light: '#ECEBE3',          // Subtle borders
         },
         success: {
           DEFAULT: '#22c55e', // Green 500
@@ -3384,7 +3393,7 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        sans: ['Instrument Sans', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
         serif: ['Playfair Display', 'Georgia', 'serif'],
       },
       // Note: this project uses CSS clamp() tokens — static Tailwind font sizes
@@ -3434,12 +3443,12 @@ module.exports = {
 
 The design uses CSS custom properties that automatically respond to dark mode. In dark mode:
 
-- Primary: `#1a1a1a` → `#ffffff` (inverts — white becomes the brand color)
-- Text on Primary: `#ffffff` → `#000000` (inverts — black text on white buttons)
-- Background: `#ffffff` → `#0F172A` (slate 900)
-- Surface: `#F9FAFB` → `#1E293B` (slate 800)
-- Text Primary: `#111827` → `#F1F5F9` (slate 100)
-- Text Secondary: `#6B7280` → `#94A3B8` (slate 400)
+- Primary: `#14110f` → `#fcfcfa` (inverts — warm off-white becomes the brand color)
+- Text on Primary: `#fcfcfa` → `#14110f` (inverts — warm near-black text on off-white buttons)
+- Background: `#fcfcfa` → `#14110F` (warm near-black)
+- Surface: `#F4F2EC` → `#201C18` (warm dark surface)
+- Text Primary: `#14110f` → `#F5F3EE` (warm off-white)
+- Text Secondary: `#57524B` → `#A69F92` (warm light gray)
 
 This is handled automatically via the CSS variables in `src/styles/variables.css`.
 
@@ -3449,6 +3458,7 @@ This is handled automatically via the CSS variables in `src/styles/variables.css
 
 | Version | Date       | Changes                                                                                                                                                                                                                                                                                                 |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.3.0   | 2026-07-18 | **Editorial redesign**: Warmed the monochrome palette from neutral gray (#1a1a1a/#ffffff) to a warm near-black/off-white (#14110f/#fcfcfa) across light and dark mode. Replaced Inter with Instrument Sans for UI/body text. Added a true italic Playfair Display face for headline emphasis (previously browser-synthesized). Retinted all text/surface/border tokens for warmth while preserving WCAG AA contrast. |
 | 2.2.0   | 2026-06-25 | **Sync with implementation**: Corrected color palette from blue (#3b82f6) to monochrome (#1a1a1a/#ffffff). Updated typography to dual-font system (Inter + Playfair Display). Added fluid clamp() type scale including 6xl/7xl. Added missing tokens (surface-dark, text-tertiary, text-on-dark, border-light, border-radius-xl, icon-size, line-height-snug). Fixed dark mode text-on-primary (#ffffff → #000000). Added Problem and Solution section components. Updated WCAG contrast matrix. Fixed responsive spacing docs. |
 | 2.1.0   | 2025-12-20 | **Major expansion**: Added comprehensive component library documentation (28 components), TypeScript prop interfaces, detailed hook documentation (useMediaQuery, useParallax, etc.), architectural patterns, responsive utility classes, CSS vs programmatic patterns, and enhanced cross-referencing. |
 | 1.0.0   | 2025-12-20 | Initial release: blue accent color (#3b82f6), Inter-only typography, WCAG contrast ratios, breakpoints, and component library documentation.                                                                                                                                                           |
@@ -3458,7 +3468,7 @@ This is handled automatically via the CSS variables in `src/styles/variables.css
 ## Resources
 
 - **Tailwind CSS:** <https://tailwindcss.com/docs/customizing-colors>
-- **Inter Font:** <https://fonts.google.com/specimen/Inter>
+- **Instrument Sans Font:** <https://fonts.google.com/specimen/Instrument Sans>
 - **Playfair Display Font:** <https://fonts.google.com/specimen/Playfair+Display>
 - **Font Awesome:** <https://fontawesome.com/search?o=r&m=free&s=solid>
 - **WCAG 2.1 Guidelines:** <https://www.w3.org/WAI/WCAG21/quickref/>

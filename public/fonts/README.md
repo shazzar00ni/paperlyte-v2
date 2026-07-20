@@ -4,10 +4,11 @@ This directory contains self-hosted font files for security and performance.
 
 ## Current Fonts
 
-- ✅ **Inter Variable** (`Inter-Variable-v2.woff2`) - Body text and UI elements (Latin subset, ~48KB, sourced from Google Fonts)
+- ✅ **Instrument Sans Variable** (`Instrument-Sans-Variable.woff2`) - Body text and UI elements (Latin subset, ~36KB, sourced from Google Fonts)
 - ✅ **Playfair Display Variable** (`PlayfairDisplay-Variable.woff2`) - Headings (Latin subset, ~38KB, sourced from Google Fonts)
+- ✅ **Playfair Display Italic Variable** (`PlayfairDisplay-Italic-Variable.woff2`) - True italic glyphs for headline emphasis (Latin subset, ~72KB, sourced from Google Fonts)
 
-Both fonts are self-hosted Latin-subsetted variable fonts. No CDN dependencies at runtime.
+All fonts are self-hosted Latin-subsetted variable fonts. No CDN dependencies at runtime.
 
 ## Font Face Declarations
 

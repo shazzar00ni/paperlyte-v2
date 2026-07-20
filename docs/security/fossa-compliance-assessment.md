@@ -25,23 +25,30 @@ by `sharp`, a devDependency used only by `scripts/generate-icons.js` and
 The remaining platform binaries (`@img/sharp-darwin-*`, `@img/sharp-linux-*`
 without the `-libvips-` infix, etc.) are `Apache-2.0`-only and not flagged.
 
-**Why this isn't a license violation:** `libvips`, the LGPL-3.0 component, is
-consumed as a dynamically-linked shared library — exactly the usage LGPL
-permits without imposing copyleft on the linking application. `sharp` and its
-native binaries are a devDependency: they run during `npm run` build/icon
-scripts on a developer's or CI machine and are never included in the
-production landing page bundle shipped to end users (verify with
-`npm ls sharp` — it resolves only under `devDependencies`, and the build
-output in `dist/` contains no native binaries).
+**Why this isn't a license violation *for the current release artifacts*:**
+`libvips`, the LGPL-3.0 component, is consumed as a dynamically-linked shared
+library — exactly the usage LGPL permits without imposing copyleft on the
+linking application. `sharp` and its native binaries are a devDependency:
+they run during `npm run` build/icon scripts on a developer's or CI machine
+and are never included in the production landing page bundle shipped to end
+users (verify with `npm ls sharp` — it resolves only under
+`devDependencies`, and the build output in `dist/` contains no native
+binaries). This conclusion is scoped to the artifacts distributed today —
+dynamic linking and devDependency status don't retroactively waive LGPL/MPL
+obligations, so if `sharp`, `lightningcss`, or `axe-core` (or their native
+binaries) are ever bundled into a distributed build, this assessment must be
+revisited.
 
 ## Dependency Quality (63–66 issues)
 
 **Root cause:** the majority are FOSSA's composite outdated/maintenance
 scoring applied across the ~750-package resolved tree — not concrete defects.
 This count drifts by a few issues over time purely from FOSSA re-scoring the
-existing tree (63 at the original 2026-06-21 investigation, 66 as of this PR),
-without any corresponding change to this repo's dependencies. The one hard
-deprecation chain, unchanged across both counts, is:
+existing tree — these are dated historical snapshots, not a fixed baseline:
+63 (FOSSA GitHub App check, 2026-06-21 investigation) and 66 (same check,
+observed on PR #1309 as of 2026-07-18) — both without any corresponding
+change to this repo's dependencies. The one hard deprecation chain, unchanged
+across both snapshots, is:
 
 ```text
 @lhci/cli (dev) > chrome-launcher > rimraf@3.0.2 > glob@7.2.3 > inflight@1.0.6
@@ -51,13 +58,21 @@ deprecation chain, unchanged across both counts, is:
 not supported, and leaks memory"), and `rimraf@3.0.2` / `glob@7.2.3` are
 flagged as unsupported pre-v4/v9 releases.
 
-**Why this can't be fixed by updating:** `@lhci/cli` is already pinned to its
-latest published release (`0.15.1` — confirmed via `npm view @lhci/cli
-versions`), and its bundled `chrome-launcher` still depends on the
-`rimraf@3.0.2` chain upstream. There is no newer `@lhci/cli` release that
-carries a fixed `chrome-launcher`. Forcing an `overrides` bump of `rimraf`/
-`glob` to their current majors (v4+/v6+) would be a breaking change for
-`chrome-launcher`'s API expectations and isn't a safe unilateral fix.
+**Why this can't be fixed by updating (verified 2026-07-18):** `npm view
+@lhci/cli versions` shows `0.15.1` as the latest published release, matching
+what's installed — there is no newer `@lhci/cli` to pull in a fixed
+`chrome-launcher`. `npm outdated` on that date showed no other actionable
+bump for this chain either. Its bundled `chrome-launcher` still depends on
+the `rimraf@3.0.2` chain upstream (confirmed via `package-lock.json`
+inspection: `chrome-launcher` → `rimraf@3.0.2` → `glob@7.2.3` →
+`inflight@1.0.6`). Forcing an `overrides` bump of `rimraf`/`glob` to their
+current majors (v4+/v6+) was not attempted in this pass — their APIs changed
+across those majors and `chrome-launcher`'s actual call paths into them
+haven't been audited for compatibility, so treat "would break
+`chrome-launcher`" as an unverified risk assessment rather than a confirmed
+finding. A safer path, if this is revisited, is to test the override in an
+isolated branch and run the Lighthouse CI workflow end-to-end before trusting
+it.
 
 **Impact:** `@lhci/cli` is a devDependency used only by Lighthouse CI in
 `.github/workflows/`. `inflight` is a transitive install-time dependency of a
@@ -86,6 +101,15 @@ is triggered.
   file has no effect on the hosted GitHub App check itself; FOSSA's app-based
   PR checks are configured exclusively through the dashboard (below). It
   exists to document intent in-repo and to support a future CLI-based scan.
+  **Caveat:** this allowlist is repo-wide, not scoped to the specific
+  `@img/sharp-*` / `lightningcss` / `axe-core` packages that justify it —
+  the FOSSA CLI config schema (`.fossa.yml` v3) doesn't expose a
+  per-package license exception, only a project-wide policy. That means any
+  *new* dependency introduced later under one of these allowed licenses
+  would pass a CLI scan silently. If a future dependency change adds an
+  LGPL-3.0-or-later or MPL-2.0 package, re-check whether it's still
+  build-time-only/unmodified before assuming this file's allowance still
+  applies.
 - Documented the 14 LGPL binaries in `docs/3RD-PARTY-SOFTWARE.md` under
   "Build-Time Native Dependencies," with the same build-only rationale as
   this file, so the license inventory doesn't silently omit them.
@@ -98,20 +122,29 @@ project. A repo owner with dashboard access needs to:
 
 1. Sign in to the [FOSSA dashboard](https://app.fossa.com/) and open the
    `paperlyte-v2` project (GitHub App installation 1014311).
-2. Under **Settings → Issue Policies → License Policy**, add
-   `LGPL-3.0-or-later` and `MPL-2.0` to the allowed-licenses list, or add a
-   scoped exception for the `sharp` / `@img/sharp-*` and `lightningcss` /
-   `axe-core` packages specifically.
-3. Under **Settings → Issue Policies → Quality**, either exclude
-   devDependencies from quality scoring, or raise the issue threshold so the
-   known `inflight@1.0.6` chain (reached only via the devDependency
-   `@lhci/cli`) doesn't fail the check.
-4. Alternatively, under the project's **Settings → Notifications/Checks**,
-   set the License Compliance and Dependency Quality checks to
-   non-blocking/informational if per-license/threshold tuning isn't desired.
+2. Under **Settings → Issue Policies → License Policy**, **prefer a scoped
+   exception** for the specific `sharp` / `@img/sharp-*`, `lightningcss`, and
+   `axe-core` packages over a blanket allow-list entry for
+   `LGPL-3.0-or-later` / `MPL-2.0`. A blanket allow would silently pass *any*
+   future dependency carrying those licenses — including ones that end up in
+   the production bundle — not just today's known, build-time-only set.
+3. Under **Settings → Issue Policies → Quality**, prefer a scoped/expiring
+   exception for the known `inflight@1.0.6` chain (reached only via the
+   devDependency `@lhci/cli`) over excluding all devDependencies from quality
+   scoring or raising the global threshold — a blanket exclusion or threshold
+   change would also stop surfacing genuinely new quality issues in
+   devDependencies, not just this one chain.
+4. Setting the checks to non-blocking/informational under **Settings →
+   Notifications/Checks** is the least precise option: it stops the check
+   from gating *any* PR, including one that introduces a real new production
+   license or quality problem. If dashboard-level per-license/per-package
+   scoping isn't available, treat this as a fallback that needs an owner's
+   explicit sign-off, not a default choice.
 
 Until a dashboard change is made, expect both checks to keep reporting
 `failure` on every PR — that is expected and does not indicate a new or
-regressed issue. Reviewers should treat these two checks as non-blocking
-noise (see `memory/decisions.md`) and rely on the required CI gates (Lint and
-Type Check / CI Success, `npm audit`) as the real merge signal.
+regressed issue. Reviewers should treat these two specific, documented
+findings as non-blocking noise (see `memory/decisions.md`) while still
+watching for the checks to flag genuinely new issues, and rely on the
+required CI gates (Lint and Type Check / CI Success, `npm audit`) as the
+primary merge signal.

@@ -62,12 +62,24 @@ function App() {
         <Solution />
         <Features />
         <Mobile />
-        <LazySection><Statistics /></LazySection>
-        <LazySection><Comparison /></LazySection>
-        <LazySection><Testimonials /></LazySection>
-        <LazySection><EmailCapture /></LazySection>
-        <LazySection><FAQ /></LazySection>
-        <LazySection><CTA /></LazySection>
+        <LazySection>
+          <Statistics />
+        </LazySection>
+        <LazySection>
+          <Comparison />
+        </LazySection>
+        <LazySection>
+          <Testimonials />
+        </LazySection>
+        <LazySection>
+          <EmailCapture />
+        </LazySection>
+        <LazySection>
+          <FAQ />
+        </LazySection>
+        <LazySection>
+          <CTA />
+        </LazySection>
       </main>
       <Footer />
       <FeedbackWidget />

@@ -8,7 +8,7 @@
 // old runtime code with a new shell before activation handoff completes.
 // onActivate then deletes every cache whose name differs from this value,
 // so old caches are cleaned up once the new SW takes over.
-const CACHE_VERSION = 'paperlyte-v3'
+const CACHE_VERSION = 'paperlyte-v4'
 const OFFLINE_PAGE = '/offline.html'
 
 // Pre-cache these on install so offline fallback is always available
@@ -18,6 +18,7 @@ const PRECACHE = [
   '/offline.css',
   '/offline.js',
   '/styles/legal.css',
+  '/styles/pages.css',
   '/site.webmanifest',
   '/fonts/Inter-Variable-v2.woff2',
   '/fonts/PlayfairDisplay-Variable.woff2',
@@ -32,10 +33,11 @@ const MAX_ASSET_ENTRIES = 60
 const HASHED_ASSET_RE = /^\/assets\/.+\.(js|css|woff2?)$/
 
 // Root-level pre-cached files that aren't content-hashed → cache-first.
-// Includes the offline fallback assets and the shared legal-page stylesheet
-// (public/styles/legal.css), so previously visited policy pages still render
-// styled when offline instead of falling through to an unservable network fetch.
-const OFFLINE_ASSET_RE = /^\/(offline\.css|offline\.js|styles\/legal\.css)$/
+// Includes the offline fallback assets and the shared static-page stylesheets
+// (public/styles/legal.css, public/styles/pages.css), so previously visited
+// policy/about/blog pages still render styled when offline instead of
+// falling through to an unservable network fetch.
+const OFFLINE_ASSET_RE = /^\/(offline\.css|offline\.js|styles\/(legal|pages)\.css)$/
 
 // Other cacheable static files (images, icons, fonts) → stale-while-revalidate
 const CACHEABLE_RE = /\.(png|jpg|jpeg|webp|avif|svg|ico|woff2?)$/

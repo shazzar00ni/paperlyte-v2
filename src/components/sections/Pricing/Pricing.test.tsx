@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { Pricing } from './Pricing'
 import { PRICING_PLANS } from '@constants/pricing'
 
@@ -225,5 +226,35 @@ describe('Pricing', () => {
     const featureLists = container.querySelectorAll('ul')
     // Should have one list per plan
     expect(featureLists).toHaveLength(PRICING_PLANS.length)
+  })
+
+  it('should open the waitlist modal when a plan CTA is clicked', async () => {
+    const user = userEvent.setup()
+    render(<Pricing />)
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+
+    const proPlan = PRICING_PLANS.find((p) => p.id === 'pro')
+    expect(proPlan).toBeDefined()
+    if (!proPlan) return
+
+    await user.click(screen.getByRole('button', { name: `${proPlan.ctaText} for Pro plan` }))
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+  })
+
+  it('should close the waitlist modal when the close button is clicked', async () => {
+    const user = userEvent.setup()
+    render(<Pricing />)
+
+    const freePlan = PRICING_PLANS.find((p) => p.id === 'free')
+    expect(freePlan).toBeDefined()
+    if (!freePlan) return
+
+    await user.click(screen.getByRole('button', { name: `${freePlan.ctaText} for Free plan` }))
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Close' }))
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
 })

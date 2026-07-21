@@ -11,14 +11,13 @@
 - Hero section with value proposition
 - Problem/Solution sections
 - Features showcase
+- Pricing
 - Email capture (waitlist)
 - FAQ section
 - Testimonials
 - Competitor comparison
 - Call-to-action sections
 - Privacy and Terms pages
-
-**Note**: A Pricing component exists in the codebase but is not currently rendered on the landing page.
 
 ## Build/Lint/Test Commands
 
@@ -265,7 +264,7 @@ paperlyte-v2/
 │   │   │   ├── Statistics/   # Usage statistics
 │   │   │   ├── Comparison/   # Competitor comparison
 │   │   │   ├── Testimonials/ # User testimonials
-│   │   │   ├── Pricing/      # Pricing information (not currently rendered)
+│   │   │   ├── Pricing/      # Pricing information
 │   │   │   ├── EmailCapture/ # Email capture form
 │   │   │   ├── FAQ/          # Frequently asked questions
 │   │   │   └── CTA/          # Call-to-action
@@ -665,35 +664,37 @@ The landing page is composed of the following sections (rendered in App.tsx in t
    - Feature checkmarks
    - Data from `@constants/comparison`
 
-9. **Testimonials** (`@components/sections/Testimonials`)
-   - User testimonials
-   - Star ratings
-   - Data from `@constants/testimonials`
+9. **Pricing** (`@components/sections/Pricing`)
+   - Pricing plan cards
+   - Data from `@constants/pricing`
 
-10. **EmailCapture** (`@components/sections/EmailCapture`)
+10. **Testimonials** (`@components/sections/Testimonials`)
+    - User testimonials
+    - Star ratings
+    - Data from `@constants/testimonials`
+
+11. **EmailCapture** (`@components/sections/EmailCapture`)
     - Waitlist signup form
     - Email validation
     - Analytics tracking
 
-11. **FAQ** (`@components/sections/FAQ`)
+12. **FAQ** (`@components/sections/FAQ`)
     - Frequently asked questions
     - Expandable accordions
     - Data from `@constants/faq`
 
-12. **CTA** (`@components/sections/CTA`)
+13. **CTA** (`@components/sections/CTA`)
     - Final call-to-action
     - Multiple signup options
 
-13. **Footer** (`@components/layout/Footer`)
+14. **Footer** (`@components/layout/Footer`)
     - Legal links (Privacy, Terms)
     - Social media links
     - Copyright information
 
-14. **FeedbackWidget** (`@components/ui/FeedbackWidget`)
+15. **FeedbackWidget** (`@components/ui/FeedbackWidget`)
     - Floating feedback button
     - User feedback form
-
-**Note**: A `Pricing` component exists at `@components/sections/Pricing/` but is not currently rendered in App.tsx.
 
 ## Available Constants
 

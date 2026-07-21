@@ -1,4 +1,4 @@
-import { useRef, useCallback, lazy, Suspense } from 'react'
+import { useRef, useCallback, useEffect, lazy, Suspense } from 'react'
 import { ErrorBoundary } from '@components/ErrorBoundary'
 import { Header } from '@components/layout/Header'
 import { Footer } from '@components/layout/Footer'
@@ -9,12 +9,16 @@ import { Features } from '@components/sections/Features'
 import { Mobile } from '@components/sections/Mobile'
 import { FeedbackWidget } from '@components/ui/FeedbackWidget'
 import { useAnalytics } from '@hooks/useAnalytics'
+import { scrollToSection } from '@utils/navigation'
 
 const Statistics = lazy(() =>
   import('@components/sections/Statistics').then((m) => ({ default: m.Statistics }))
 )
 const Comparison = lazy(() =>
   import('@components/sections/Comparison').then((m) => ({ default: m.Comparison }))
+)
+const Pricing = lazy(() =>
+  import('@components/sections/Pricing').then((m) => ({ default: m.Pricing }))
 )
 const Testimonials = lazy(() =>
   import('@components/sections/Testimonials').then((m) => ({ default: m.Testimonials }))
@@ -37,6 +41,17 @@ function App() {
 
   // Initialize analytics with scroll depth tracking
   useAnalytics()
+
+  // Scroll to the section named in the URL hash on initial load. Native
+  // browser hash-scrolling can't find sections that are still loading as
+  // lazy chunks (e.g. a cross-page link to /#email-capture); scrollToSection
+  // waits for the target to mount before scrolling.
+  useEffect(() => {
+    const hash = window.location.hash.slice(1)
+    if (hash) {
+      scrollToSection(hash)
+    }
+  }, [])
 
   const handleSkipToMain = useCallback(() => {
     mainRef.current?.focus()
@@ -62,6 +77,11 @@ function App() {
         <ErrorBoundary fallback={<></>}>
           <Suspense fallback={null}>
             <Comparison />
+          </Suspense>
+        </ErrorBoundary>
+        <ErrorBoundary fallback={<></>}>
+          <Suspense fallback={null}>
+            <Pricing />
           </Suspense>
         </ErrorBoundary>
         <ErrorBoundary fallback={<></>}>

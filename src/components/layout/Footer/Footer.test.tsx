@@ -43,6 +43,14 @@ describe('Footer', () => {
     const contactLink = screen.getByRole('link', { name: 'Contact' })
     expect(contactLink).toBeInTheDocument()
     expect(contactLink).toHaveAttribute('href', 'mailto:hello@paperlyte.com')
+
+    const aboutLink = screen.getByRole('link', { name: 'About' })
+    expect(aboutLink).toBeInTheDocument()
+    expect(aboutLink).toHaveAttribute('href', '/about.html')
+
+    const blogLink = screen.getByRole('link', { name: 'Blog' })
+    expect(blogLink).toBeInTheDocument()
+    expect(blogLink).toHaveAttribute('href', '/blog.html')
   })
 
   it('should render Legal link group', () => {

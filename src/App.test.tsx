@@ -9,6 +9,21 @@ describe('App Integration', () => {
     // Clear any module-level MutationObservers created by scrollToSection in
     // components under test — prevents observer leakage across tests.
     _clearPendingScrollObservers()
+    window.history.replaceState(null, '', '/')
+  })
+
+  it('should scroll to the section named in the URL hash once it mounts', async () => {
+    window.history.replaceState(null, '', '#email-capture')
+    if (!Element.prototype.scrollIntoView) {
+      Element.prototype.scrollIntoView = () => {}
+    }
+    const scrollIntoViewMock = vi.fn()
+    vi.spyOn(Element.prototype, 'scrollIntoView').mockImplementation(scrollIntoViewMock)
+
+    render(<App />)
+
+    // #email-capture is a lazy chunk — scrollToSection must wait for it to mount
+    await waitFor(() => expect(scrollIntoViewMock).toHaveBeenCalled())
   })
 
   it('should render with proper semantic structure and section order', async () => {
@@ -31,6 +46,7 @@ describe('App Integration', () => {
     await waitFor(() => {
       expect(container.querySelector('#statistics')).toBeInTheDocument()
       expect(container.querySelector('#comparison')).toBeInTheDocument()
+      expect(container.querySelector('#pricing')).toBeInTheDocument()
       expect(container.querySelector('#testimonials')).toBeInTheDocument()
       expect(container.querySelector('#email-capture')).toBeInTheDocument()
       expect(container.querySelector('#faq')).toBeInTheDocument()
@@ -53,6 +69,7 @@ describe('App Integration', () => {
       'mobile',
       'statistics',
       'comparison',
+      'pricing',
       'testimonials',
       'email-capture',
       'faq',
@@ -254,6 +271,7 @@ describe('App Integration', () => {
     await waitFor(() => {
       expect(container.querySelector('#statistics')).toBeInTheDocument()
       expect(container.querySelector('#comparison')).toBeInTheDocument()
+      expect(container.querySelector('#pricing')).toBeInTheDocument()
       expect(container.querySelector('#testimonials')).toBeInTheDocument()
       expect(container.querySelector('#email-capture')).toBeInTheDocument()
       expect(container.querySelector('#faq')).toBeInTheDocument()

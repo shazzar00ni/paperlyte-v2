@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog - Paperlyte</title>
+    <meta
+      name="description"
+      content="The Paperlyte blog. Notes on building a lightning-fast, distraction-free note-taking app — coming soon."
+    />
+    <!-- Self-hosted fonts for security -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/Inter-Variable-v2.woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/PlayfairDisplay-Variable.woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="/styles/pages.css" />
+  </head>
+  <body>
+    <div class="container">
+      <a href="/" class="back-link"><span aria-hidden="true">←</span> Back to Paperlyte</a>
+
+      <header>
+        <h1>The <em>Paperlyte</em> blog</h1>
+        <p class="tagline">Notes on building a lightning-fast, distraction-free note-taking app.</p>
+      </header>
+
+      <main>
+        <div class="empty-state">
+          <p class="glyph">Coming soon</p>
+          <p>
+            We're heads-down building Paperlyte and haven't published our first post yet. Join
+            the waitlist and we'll let you know as soon as there's something to read.
+          </p>
+          <a href="/#email-capture" class="cta-button">Join the waitlist</a>
+        </div>
+      </main>
+
+      <footer>
+        <p>&copy; <span id="year"></span> Paperlyte. All rights reserved.</p>
+      </footer>
+    </div>
+    <script nonce="CSP_NONCE">
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>

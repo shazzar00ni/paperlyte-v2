@@ -1,11 +1,9 @@
-import { useState } from 'react'
-import type { FormEvent } from 'react'
-import { logError } from '@utils/monitoring'
-import { validateEmail } from '@utils/validation'
+import { useEffect, useRef } from 'react'
 import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
+import { useWaitlistSubscribe } from '@/hooks/useWaitlistSubscribe'
 import { WAITLIST_COUNT, LAUNCH_QUARTER } from '@constants/waitlist'
 import {
   EMAIL_CAPTURE_CONTENT as COPY,
@@ -15,10 +13,19 @@ import styles from './EmailCapture.module.css'
 
 /** Renders the Email Capture section with a waitlist signup form and benefit highlights. */
 export const EmailCapture = (): React.ReactElement => {
-  const [email, setEmail] = useState('')
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const { email, setEmail, isSubmitted, isLoading, error, handleSubmit } =
+    useWaitlistSubscribe('EmailCapture')
+  const successHeadingRef = useRef<HTMLHeadingElement>(null)
+
+  // Move focus to the confirmation heading once the form is replaced by the
+  // success view. This announces the result to screen readers (heading + level)
+  // and lands keyboard focus inside the new content, so the next Tab reaches the
+  // share buttons instead of being lost on the now-unmounted submit button.
+  useEffect(() => {
+    if (isSubmitted) {
+      successHeadingRef.current?.focus()
+    }
+  }, [isSubmitted])
 
   // Safe origin for SSR compatibility
   const origin = typeof window !== 'undefined' ? window.location.origin : ''
@@ -30,91 +37,6 @@ export const EmailCapture = (): React.ReactElement => {
   const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedOrigin}`
   const linkedinShareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodedOrigin}&title=${encodeURIComponent(shareTitle)}`
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
-    e.preventDefault()
-    setError(null)
-
-    const normalizedEmail = email.trim().toLowerCase()
-
-    const validation = validateEmail(normalizedEmail)
-    if (!validation.isValid) {
-      setError(validation.error ?? 'Please enter a valid email address.')
-      return
-    }
-
-    setIsLoading(true)
-
-    try {
-      const res = await fetch('/.netlify/functions/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: normalizedEmail }),
-      })
-
-      if (!res.ok) {
-        const data: unknown = await res.json().catch(() => ({}))
-        const serverMessage =
-          typeof data === 'object' &&
-          data !== null &&
-          'error' in data &&
-          typeof data.error === 'string'
-            ? data.error
-            : undefined
-
-        if (res.status === 400 || res.status === 429) {
-          // User-caused error — display message without logging to monitoring
-          setIsLoading(false)
-          setError(
-            serverMessage ??
-              (res.status === 429
-                ? 'Too many requests. Please try again later.'
-                : 'Invalid email address. Please check and try again.')
-          )
-          return
-        }
-
-        // Unexpected server error — propagate to catch block for monitoring
-        throw new Error(serverMessage ?? 'Subscription failed')
-      }
-
-      setIsLoading(false)
-      setIsSubmitted(true)
-    } catch (err) {
-      const error = err instanceof Error ? err : new Error(String(err))
-      logError(
-        error,
-        {
-          tags: {
-            component: 'EmailCapture',
-            action: 'subscribe',
-            errorType: error.name,
-          },
-          ...(!(err instanceof Error)
-            ? { errorInfo: { originalError: String(err).slice(0, 200) } }
-            : {}),
-        },
-        'EmailCapture'
-      )
-
-      let message = "Couldn't add you to the waitlist. Check your connection and try again."
-      if (
-        error.name === 'TypeError' ||
-        error.message.toLowerCase().includes('network') ||
-        error.message.toLowerCase().includes('fetch')
-      ) {
-        message = 'Connection error. Check your internet and try again.'
-      } else if (
-        error.message.toLowerCase().includes('invalid') ||
-        error.message.toLowerCase().includes('validation')
-      ) {
-        message = "That email address doesn't look right. Please check and try again."
-      }
-
-      setIsLoading(false)
-      setError(message)
-    }
-  }
-
   if (isSubmitted) {
     return (
       <Section id="email-capture" background="surface">
@@ -123,7 +45,9 @@ export const EmailCapture = (): React.ReactElement => {
             <div className={styles.successIcon}>
               <Icon name="fa-check-circle" size="xl" color="var(--color-success)" />
             </div>
-            <h2 className={styles.successTitle}>{COPY.successTitle}</h2>
+            <h2 ref={successHeadingRef} tabIndex={-1} className={styles.successTitle}>
+              {COPY.successTitle}
+            </h2>
             <p className={styles.successText}>{COPY.successText}</p>
 
             <div className={styles.nextSteps}>

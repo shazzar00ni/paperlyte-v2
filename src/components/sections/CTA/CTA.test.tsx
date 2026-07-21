@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { CTA } from './CTA'
 
 describe('CTA', () => {
@@ -71,5 +72,67 @@ describe('CTA', () => {
     const { container } = render(<CTA />)
     expect(container).toBeDefined()
     expect(container.querySelector('section')).toBeInTheDocument()
+  })
+
+  describe('Waitlist modal', () => {
+    let fetchMock: ReturnType<typeof vi.fn>
+
+    beforeEach(() => {
+      fetchMock = vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ success: true }),
+      })
+      vi.stubGlobal('fetch', fetchMock)
+    })
+
+    afterEach(() => {
+      vi.unstubAllGlobals()
+    })
+
+    it('does not render the modal until the button is clicked', () => {
+      render(<CTA />)
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    })
+
+    it('opens the waitlist modal instead of navigating away when clicked', async () => {
+      const user = userEvent.setup()
+      render(<CTA />)
+
+      await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+      const dialog = screen.getByRole('dialog')
+      expect(dialog).toBeInTheDocument()
+      expect(dialog).toHaveAttribute('aria-labelledby', 'waitlist-modal-title')
+    })
+
+    it('lets the user submit their email and join the waitlist from within the modal', async () => {
+      const user = userEvent.setup()
+      render(<CTA />)
+
+      await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+      await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+      await user.click(screen.getByRole('dialog').querySelector('button[type="submit"]')!)
+
+      await waitFor(() => {
+        expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()
+      })
+      expect(fetchMock).toHaveBeenCalledWith('/.netlify/functions/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: 'test@example.com' }),
+        signal: expect.any(AbortSignal),
+      })
+    })
+
+    it('closes the modal when the close button is clicked', async () => {
+      const user = userEvent.setup()
+      render(<CTA />)
+
+      await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+      expect(screen.getByRole('dialog')).toBeInTheDocument()
+
+      await user.click(screen.getByRole('button', { name: /close/i }))
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    })
   })
 })

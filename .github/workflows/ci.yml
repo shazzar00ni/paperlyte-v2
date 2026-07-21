@@ -5,6 +5,8 @@ on:
     branches: [main, develop]
   pull_request:
     branches: [main, develop]
+  repository_dispatch:
+    types: [run-ci]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -16,14 +18,24 @@ jobs:
   lint-and-typecheck:
     name: Lint and Type Check
     runs-on: ubuntu-latest
+    if: github.event_name != 'repository_dispatch'
     permissions:
       contents: read
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+
       - name: Checkout code
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
+          # For repository_dispatch (weekly bot commits), check out the specific
+          # bot commit SHA passed via client_payload rather than the default-branch
+          # HEAD, which may have advanced by the time the event is processed.
+          ref: ${{ github.event.client_payload.sha || github.sha }}
 
       - name: Setup Node.js
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
@@ -87,10 +99,16 @@ jobs:
       contents: read
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+
       - name: Checkout code
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
+          ref: ${{ github.event.client_payload.sha || github.sha }}
 
       - name: Setup Node.js
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
@@ -139,6 +157,12 @@ jobs:
         if: ${{ !cancelled() }}
         continue-on-error: true
         uses: codacy/codacy-coverage-reporter-action@89d6c85cfafaec52c72b6c5e8b2878d33104c699  # v1.3.0
+        env:
+          # For repository_dispatch runs the Codacy reporter may fall back to
+          # GITHUB_SHA (the default-branch HEAD at dispatch time) instead of the
+          # checked-out commit. COMMIT_UUID overrides that so coverage is always
+          # attributed to the correct bot commit SHA.
+          COMMIT_UUID: ${{ github.event.client_payload.sha || github.sha }}
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: coverage/lcov.info
@@ -169,10 +193,16 @@ jobs:
       contents: read
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+
       - name: Checkout code
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
+          ref: ${{ github.event.client_payload.sha || github.sha }}
 
       - name: Setup Node.js
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
@@ -187,6 +217,9 @@ jobs:
         id: build-step
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
         run: npm run build
 
       - name: Upload build artifacts
@@ -230,10 +263,16 @@ jobs:
       pull-requests: write
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+
       - name: Checkout code
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
+          ref: ${{ github.event.client_payload.sha || github.sha }}
 
       - name: Setup Node.js
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
@@ -252,14 +291,59 @@ jobs:
 
       - name: Check bundle size
         id: size-limit
-        run: npm run size
+        run: |
+          set -o pipefail
+          npm run size 2>&1 | tee /tmp/size-output.txt
 
-      - name: Compare bundle sizes
-        if: github.event_name == 'pull_request'
-        uses: andresz1/size-limit-action@94bc357df29c36c8f8d50ea497c3e225c3c95d1d # v1.8.0.6.1.8.0
+      - name: Post size report to PR
+        if: ${{ always() && github.event_name == 'pull_request' }}
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          skip_step: install
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const output = fs.existsSync('/tmp/size-output.txt')
+              ? fs.readFileSync('/tmp/size-output.txt', 'utf8').trim()
+              : 'Size output not available.';
+            const body = [
+              '## \u{1F4E6} Bundle Size Report',
+              '',
+              '```',
+              output,
+              '```',
+            ].join('\n');
+            const marker = '## \u{1F4E6} Bundle Size Report';
+            const comments = await github.paginate(
+              github.rest.issues.listComments,
+              {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                per_page: 100,
+              }
+            );
+            const existing = comments.find(
+              c => c.user?.login === 'github-actions[bot]' && c.body?.includes(marker)
+            );
+            try {
+              if (existing) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: existing.id,
+                  body,
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body,
+                });
+              }
+            } catch (err) {
+              core.warning(`Size report comment skipped: ${err.message}`);
+            }
 
       - name: Bundle Size Summary
         if: always()
@@ -289,10 +373,16 @@ jobs:
       pull-requests: write
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+
       - name: Checkout code
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
+          ref: ${{ github.event.client_payload.sha || github.sha }}
 
       - name: Setup Node.js
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
@@ -352,10 +442,16 @@ jobs:
       contents: read
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+
       - name: Checkout code
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
+          ref: ${{ github.event.client_payload.sha || github.sha }}
 
       - name: Setup Node.js
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
@@ -428,11 +524,16 @@ jobs:
       pull-requests: write
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+
       - name: Add To GitHub Projects
         uses: actions/add-to-project@5afcf98fcd03f1c2f92c3c83f58ae24323cc57fd # v2.0.0
         continue-on-error: true
         with:
-          project-url: ${{ vars.PROJECT_URL || 'https://github.com/users/shazzar00ni/projects/1' }}
+          project-url: ${{ vars.PROJECT_URL || 'https://github.com/users/shazzar00ni/projects/19' }}
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
 
   # Status check job that all required jobs depend on
@@ -445,30 +546,39 @@ jobs:
       contents: read
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+
       - name: Check all jobs status
         run: |
-          if [ "${{ needs.lint-and-typecheck.result }}" != "success" ] || \
-             [ "${{ needs.test.result }}" != "success" ] || \
-             [ "${{ needs.build.result }}" != "success" ] || \
-             [ "${{ needs.size-check.result }}" != "success" ] || \
-             [ "${{ needs.lighthouse.result }}" != "success" ] || \
-             [ "${{ needs.e2e.result }}" != "success" ]; then
+          # lint-and-typecheck and its dependents are skipped on repository_dispatch;
+          # accept "skipped" as valid for those jobs, but test must always succeed.
+          ok() { [ "$1" = "success" ] || [ "$1" = "skipped" ]; }
+          LINT="${{ needs.lint-and-typecheck.result }}"
+          TEST="${{ needs.test.result }}"
+          BUILD="${{ needs.build.result }}"
+          SIZE="${{ needs.size-check.result }}"
+          LH="${{ needs.lighthouse.result }}"
+          E2E="${{ needs.e2e.result }}"
+          if ! ok "$LINT" || [ "$TEST" != "success" ] || ! ok "$BUILD" || ! ok "$SIZE" || ! ok "$LH" || ! ok "$E2E"; then
             echo "❌ CI Pipeline Failed"
-            echo "- Lint & Type Check: ${{ needs.lint-and-typecheck.result }}"
-            echo "- Tests: ${{ needs.test.result }}"
-            echo "- Build: ${{ needs.build.result }}"
-            echo "- Bundle Size: ${{ needs.size-check.result }}"
-            echo "- Lighthouse: ${{ needs.lighthouse.result }}"
-            echo "- E2E Tests: ${{ needs.e2e.result }}"
+            echo "- Lint & Type Check: $LINT"
+            echo "- Tests: $TEST"
+            echo "- Build: $BUILD"
+            echo "- Bundle Size: $SIZE"
+            echo "- Lighthouse: $LH"
+            echo "- E2E Tests: $E2E"
             exit 1
           else
             echo "✅ All CI jobs passed successfully!"
-            echo "- Lint & Type Check: ✅"
-            echo "- Tests: ✅"
-            echo "- Build: ✅"
-            echo "- Bundle Size: ✅"
-            echo "- Lighthouse: ✅"
-            echo "- E2E Tests: ✅"
+            echo "- Lint & Type Check: $LINT"
+            echo "- Tests: $TEST"
+            echo "- Build: $BUILD"
+            echo "- Bundle Size: $SIZE"
+            echo "- Lighthouse: $LH"
+            echo "- E2E Tests: $E2E"
           fi
 
       - name: CI Pipeline Summary
@@ -499,12 +609,13 @@ jobs:
           
           echo "" >> $GITHUB_STEP_SUMMARY
           
-          if [ "${{ needs.lint-and-typecheck.result }}" == "success" ] && \
-             [ "${{ needs.test.result }}" == "success" ] && \
-             [ "${{ needs.build.result }}" == "success" ] && \
-             [ "${{ needs.size-check.result }}" == "success" ] && \
-             [ "${{ needs.lighthouse.result }}" == "success" ] && \
-             [ "${{ needs.e2e.result }}" == "success" ]; then
+          ok() { [ "$1" = "success" ] || [ "$1" = "skipped" ]; }
+          if ok "${{ needs.lint-and-typecheck.result }}" && \
+             [ "${{ needs.test.result }}" = "success" ] && \
+             ok "${{ needs.build.result }}" && \
+             ok "${{ needs.size-check.result }}" && \
+             ok "${{ needs.lighthouse.result }}" && \
+             ok "${{ needs.e2e.result }}"; then
             echo "### ✅ All checks passed! Ready to merge." >> $GITHUB_STEP_SUMMARY
           else
             echo "### ❌ Some checks failed. Please review the issues above." >> $GITHUB_STEP_SUMMARY

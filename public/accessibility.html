@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Accessibility Statement - Paperlyte</title>
+    <meta
+      name="description"
+      content="Paperlyte Accessibility Statement - Our commitment to WCAG 2.1 AA, supported assistive technologies, known limitations, and how to give feedback."
+    />
+    <!-- Self-hosted fonts for security -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/Inter-Variable-v2.woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/PlayfairDisplay-Variable.woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="/styles/legal.css" />
+  </head>
+  <body>
+    <div class="container">
+      <a href="/" class="back-link">← Back to Paperlyte</a>
+
+      <header>
+        <h1>Accessibility Statement</h1>
+        <p class="last-updated">Last Updated: {{BUILD_DATE}}</p>
+      </header>
+
+      <main>
+        <h2>Commitment to Accessibility</h2>
+        <p>
+          Paperlyte is committed to ensuring digital accessibility for all users,
+          including people with disabilities. We are continually improving the
+          user experience and applying relevant accessibility standards. This
+          statement is public and applies to all users of the Paperlyte platform
+          and website.
+        </p>
+
+        <h2>Conformance Status</h2>
+        <p>
+          Our goal is to conform to
+          <a
+            href="https://www.w3.org/WAI/standards-guidelines/wcag/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >WCAG 2.1 Level AA</a
+          >
+          standards. We are working toward full conformance and treat
+          accessibility as an ongoing commitment rather than a one-time
+          milestone. Some areas of the site may not yet fully conform; where we
+          identify gaps, we prioritize and address them, and we update this
+          statement as our conformance status changes.
+        </p>
+
+        <h2>Supported Assistive Technologies &amp; Testing</h2>
+        <p>We aim to support users with:</p>
+        <ul>
+          <li>Screen readers (tested with VoiceOver, NVDA, and JAWS)</li>
+          <li>Keyboard-only navigation</li>
+          <li>Browser zoom and text resizing</li>
+          <li>High-contrast and dark mode settings</li>
+        </ul>
+        <p>
+          Testing is performed using automated tools (axe, Lighthouse, WAVE) and
+          manual checks on major browsers and operating systems.
+        </p>
+
+        <h2>Known Limitations</h2>
+        <p>
+          While we strive for full accessibility, some known limitations may
+          exist:
+        </p>
+        <ul>
+          <li>Some third-party widgets or embedded content may not be fully accessible.</li>
+          <li>Occasional missing or incorrect ARIA labels.</li>
+          <li>Incomplete alt text for decorative images.</li>
+          <li>Downloadable documents may not be fully tagged for accessibility.</li>
+        </ul>
+        <p>
+          We are actively working to address these issues. If you encounter a
+          problem not listed here, please let us know.
+        </p>
+
+        <h2>Feedback &amp; Contact</h2>
+        <p>
+          If you experience difficulty accessing any part of the Paperlyte
+          platform, or wish to request an accommodation, report a bug, or provide
+          feedback, please contact us. We aim to respond to accessibility
+          requests within 5 business days.
+        </p>
+        <div class="contact-block">
+          <strong>Accessibility contact</strong><br />
+          Email:
+          <a href="mailto:accessibility@paperlyte.com">accessibility@paperlyte.com</a><br />
+          Alternate:
+          <a href="mailto:legal@paperlyte.com">legal@paperlyte.com</a>
+        </div>
+
+        <h2>Responsible Owner</h2>
+        <p>
+          Accessibility at Paperlyte is owned by our
+          <strong>Accessibility Team Lead</strong>, reachable at
+          <a href="mailto:accessibility@paperlyte.com">accessibility@paperlyte.com</a>.
+          We continue to work toward full WCAG 2.1 AA conformance and review our
+          progress on a recurring basis.
+        </p>
+
+        <h2>Statement Updates</h2>
+        <p>
+          We review and update this statement as improvements are made and as our
+          conformance status changes. The "Last Updated" date above reflects the
+          most recent revision.
+        </p>
+      </main>
+
+      <footer>
+        <p>&copy; {{BUILD_YEAR}} Paperlyte. All rights reserved.</p>
+        <p class="footer-note">
+          This accessibility statement was last updated on
+          <strong>{{BUILD_DATE}}</strong>.
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -204,6 +204,26 @@ export function encodeHtmlEntities(input: string): string {
 }
 
 /**
+ * Repeatedly apply a regex replacement until the output stabilises or `maxIterations` is reached.
+ *
+ * @param text - Input string to process.
+ * @param pattern - Regex pattern to remove on each pass.
+ * @param maxIterations - Safety cap to prevent infinite loops (default: 10).
+ * @returns Cleaned string with all non-overlapping matches removed.
+ */
+function iterativelyRemove(text: string, pattern: RegExp, maxIterations = 10): string {
+  let result = text
+  let prev = ''
+  let i = 0
+  while (result !== prev && i < maxIterations) {
+    prev = result
+    result = result.replace(pattern, '')
+    i++
+  }
+  return result
+}
+
+/**
  * Cleanse a user-provided string of common HTML/XSS injection vectors.
  *
  * Removes angle brackets, strips dangerous URI protocols (e.g., `javascript:`, `data:`),
@@ -216,94 +236,60 @@ export function encodeHtmlEntities(input: string): string {
 export function sanitizeInput(input: string): string {
   if (!input) return ''
 
-  let sanitized = input.trim()
-
-  // Remove angle brackets early
-  sanitized = sanitized.replace(/[<>]/g, '')
-
-  const MAX_ITERATIONS = 10
-
-  // --- Remove dangerous protocols iteratively ---
-  let prevProtocolValue = ''
-  let protocolIterations = 0
-
-  while (sanitized !== prevProtocolValue && protocolIterations < MAX_ITERATIONS) {
-    prevProtocolValue = sanitized
-    sanitized = sanitized.replace(/(javascript|data|vbscript|file|about)\s*:\/*/gi, '')
-    protocolIterations++
-  }
-
-  // --- Remove event handlers iteratively ---
-  let prevEventValue = ''
-  let eventIterations = 0
-
-  while (sanitized !== prevEventValue && eventIterations < MAX_ITERATIONS) {
-    prevEventValue = sanitized
-    sanitized = sanitized.replace(/\bon\w+\s*=/gi, '')
-    eventIterations++
-  }
-
-  // --- Encode HTML entities ---
+  let sanitized = input.trim().replace(/[<>]/g, '')
+  sanitized = iterativelyRemove(sanitized, /(javascript|data|vbscript|file|about)\s*:\/*/gi)
+  sanitized = iterativelyRemove(sanitized, /\bon\w+\s*=/gi)
   sanitized = sanitized.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;')
 
   return sanitized.trim().slice(0, 500)
 }
 
+/** Validate the email field value; returns an error string or null. */
+function validateEmailField(value: unknown): string | null {
+  if (typeof value !== 'string') return 'Email must be a string'
+  const result = validateEmail(value)
+  return result.isValid ? null : (result.error ?? 'Invalid email')
+}
+
+/** Validate the name field value; returns an error string or null. */
+function validateNameField(value: unknown): string | null {
+  if (typeof value !== 'string') return 'Name must be a string'
+  const trimmed = value.trim()
+  if (trimmed.length < 2) return 'Name must be at least 2 characters'
+  if (trimmed.length > 100) return 'Name is too long'
+  return null
+}
+
+/** Validate the acceptTerms field value; returns an error string or null. */
+function validateAcceptTermsField(value: unknown): string | null {
+  if (typeof value !== 'boolean') return 'Accept terms must be a boolean'
+  if (!value) return 'You must accept the terms and conditions'
+  return null
+}
+
 /**
- * Validates form data including email, name, and terms acceptance
- * Checks type safety and field-specific validation rules
+ * Validates form data including email, name, and terms acceptance.
  *
  * @param formData - Object containing form field values
  * @returns Validation result with isValid boolean and errors object
- *
- * @example
- * ```tsx
- * const result = validateForm({
- *   email: 'user@example.com',
- *   name: 'John Doe',
- *   acceptTerms: true
- * })
- * if (!result.isValid) {
- *   console.error(result.errors)
- * }
- * ```
  */
 export function validateForm(formData: Record<string, unknown>): ValidationResult {
   const errors: Record<string, string> = {}
 
   if ('email' in formData) {
-    if (typeof formData['email'] !== 'string') {
-      errors['email'] = 'Email must be a string'
-    } else {
-      const emailValidation = validateEmail(formData['email'])
-      if (!emailValidation.isValid) {
-        errors['email'] = emailValidation.error || 'Invalid email'
-      }
-    }
+    const err = validateEmailField(formData['email'])
+    if (err) errors['email'] = err
   }
-
   if ('name' in formData) {
-    if (typeof formData['name'] !== 'string') {
-      errors['name'] = 'Name must be a string'
-    } else {
-      const trimmedName = formData['name'].trim()
-      if (trimmedName.length < 2) errors['name'] = 'Name must be at least 2 characters'
-      if (trimmedName.length > 100) errors['name'] = 'Name is too long'
-    }
+    const err = validateNameField(formData['name'])
+    if (err) errors['name'] = err
   }
-
   if ('acceptTerms' in formData) {
-    if (typeof formData['acceptTerms'] !== 'boolean') {
-      errors['acceptTerms'] = 'Accept terms must be a boolean'
-    } else if (!formData['acceptTerms']) {
-      errors['acceptTerms'] = 'You must accept the terms and conditions'
-    }
+    const err = validateAcceptTermsField(formData['acceptTerms'])
+    if (err) errors['acceptTerms'] = err
   }
 
-  return {
-    isValid: Object.keys(errors).length === 0,
-    errors,
-  }
+  return { isValid: Object.keys(errors).length === 0, errors }
 }
 
 /**

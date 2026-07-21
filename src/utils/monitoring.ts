@@ -3,6 +3,13 @@
  *
  * Centralized error logging and monitoring utility.
  * Handles error reporting to analytics and external services.
+ *
+ * Logging convention: this module and `src/analytics/**` are the sanctioned
+ * `console.log` locations (see the `no-console` overrides in eslint.config.js
+ * and .eslintrc.cjs). `console.warn`/`console.error` are reserved everywhere
+ * for genuine production diagnostics. All other modules must route logging
+ * through `logError`/`logWarning`/`logEvent` below, or guard ad-hoc debug
+ * output behind `import.meta.env.DEV`.
  */
 
 import * as Sentry from '@sentry/react'
@@ -34,6 +41,21 @@ export interface ErrorContext {
   tags?: Record<string, string>
 }
 
+/** Send `error` to Sentry as a captured exception with level, tags, and extra context. Does not add a breadcrumb. */
+function captureExceptionToSentry(
+  error: Error,
+  severity: 'low' | 'medium' | 'high' | 'critical',
+  errorSource: string,
+  context?: ErrorContext
+): void {
+  Sentry.captureException(error, {
+    level: severityToLevel(severity),
+    tags: { source: errorSource, ...context?.tags },
+    extra: { componentStack: context?.componentStack, ...context?.errorInfo },
+    contexts: { error_context: { severity, source: errorSource } },
+  })
+}
+
 /**
  * Report an Error and associated metadata to console in development or to analytics and error-monitoring services in production.
  *
@@ -51,15 +73,9 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
   if (import.meta.env.DEV) {
     console.group(`[${severity.toUpperCase()}] Error from ${errorSource}`)
     console.error(error)
-    if (context?.componentStack) {
-      console.log('Component Stack:', context.componentStack)
-    }
-    if (context?.errorInfo) {
-      console.log('Additional Info:', context.errorInfo)
-    }
-    if (context?.tags) {
-      console.log('Tags:', context.tags)
-    }
+    if (context?.componentStack) console.log('Component Stack:', context.componentStack)
+    if (context?.errorInfo) console.log('Additional Info:', context.errorInfo)
+    if (context?.tags) console.log('Tags:', context.tags)
     console.groupEnd()
     return
   }
@@ -67,7 +83,6 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
   // In production, report to monitoring services
   let originalErrorCaptured = false
   try {
-    // Track in analytics
     trackEvent('application_error', {
       error_name: error.name,
       error_message: error.message.slice(0, 200),
@@ -76,29 +91,10 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
       ...context?.tags,
     })
 
-    // Send to error monitoring service (Sentry)
     // Only sends if Sentry is initialized (DSN configured)
     if (import.meta.env.VITE_SENTRY_DSN) {
-      Sentry.captureException(error, {
-        level: severityToLevel(severity),
-        tags: {
-          source: errorSource,
-          ...context?.tags,
-        },
-        extra: {
-          componentStack: context?.componentStack,
-          ...context?.errorInfo,
-        },
-        contexts: {
-          error_context: {
-            severity,
-            source: errorSource,
-          },
-        },
-      })
+      captureExceptionToSentry(error, severity, errorSource, context)
       originalErrorCaptured = true
-
-      // Add breadcrumb for tracking error context
       Sentry.addBreadcrumb({
         category: 'error',
         message: `${errorSource}: ${error.message}`,
@@ -106,35 +102,16 @@ export function logError(error: Error, context?: ErrorContext, source?: string):
         data: context?.tags,
       })
     }
-
-    // Client-side production: errors are already reported to Sentry/analytics above.
-    // Avoid console.error here to prevent errors-in-console Lighthouse assertion failures.
   } catch (err) {
     // Forward the monitoring failure to Sentry so it isn't silently dropped.
     // A nested try/catch prevents infinite recursion if Sentry itself throws.
     if (import.meta.env.VITE_SENTRY_DSN) {
       try {
         const monitoringErr = err instanceof Error ? err : new Error(String(err))
-        // Only re-capture the original error if it wasn't already sent — avoids duplicate
-        // Sentry events when the pipeline fails after captureException succeeded (e.g. addBreadcrumb throws).
+        // Capture both exceptions before attempting breadcrumbs — if breadcrumb
+        // recording is the failing Sentry API, both events are still preserved.
         if (!originalErrorCaptured) {
-          Sentry.captureException(error, {
-            level: severityToLevel(severity),
-            tags: {
-              source: errorSource,
-              ...context?.tags,
-            },
-            extra: {
-              componentStack: context?.componentStack,
-              ...context?.errorInfo,
-            },
-            contexts: {
-              error_context: {
-                severity,
-                source: errorSource,
-              },
-            },
-          })
+          captureExceptionToSentry(error, severity, errorSource, context)
         }
         Sentry.captureException(monitoringErr)
         Sentry.addBreadcrumb({

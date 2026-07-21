@@ -271,6 +271,16 @@ analytics.init({
 
 ## Development
 
+### Logging Convention
+
+This directory (`src/analytics/**`) and `src/utils/monitoring.ts` are the
+sanctioned locations for `console.log` in production source — enforced by a
+`no-console` ESLint override in `eslint.config.js`/`.eslintrc.cjs`.
+`console.warn`/`console.error` remain reserved for genuine production
+diagnostics everywhere. Other modules should route logging through
+`monitoring`'s `logError`/`logWarning`/`logEvent`, or guard ad-hoc debug output
+behind `import.meta.env.DEV`.
+
 ### Debug Mode
 
 Enable debug mode to see analytics events in the console:

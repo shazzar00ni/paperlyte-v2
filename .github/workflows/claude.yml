@@ -37,6 +37,11 @@ jobs:
        contains(github.event.pull_request.labels.*.name, 'claude') &&
        github.event.pull_request.head.repo.full_name == github.repository)
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+
       - name: Check actor repository permission
         id: permission_check
         if: github.event_name != 'pull_request'
@@ -65,13 +70,13 @@ jobs:
 
       - name: Checkout repository
         if: github.event_name == 'pull_request' || steps.permission_check.outputs.allowed == 'true'
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0
 
       - name: Run Claude Code Action
         if: github.event_name == 'pull_request' || steps.permission_check.outputs.allowed == 'true'
-        uses: anthropics/claude-code-action@d5726de019ec4498aa667642bc3a80fca83aa102  # v1.0.148
+        uses: anthropics/claude-code-action@e90deca47693f9457b72f2b53c17d7c445a87342  # v1.0.171
         with:
           trigger_phrase: "@claude"
           label_trigger: claude

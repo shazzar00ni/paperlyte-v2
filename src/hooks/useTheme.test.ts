@@ -7,7 +7,7 @@ let useTheme: UseThemeHook
 
 const loadUseTheme = async (allowPersistentTheme: boolean): Promise<void> => {
   vi.resetModules()
-  vi.doMock('`@constants/config`', () => ({
+  vi.doMock('@constants/config', () => ({
     PERSISTENCE_CONFIG: {
       ALLOW_PERSISTENT_THEME: allowPersistentTheme,
     },

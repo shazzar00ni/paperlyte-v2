@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About - Paperlyte</title>
+    <meta
+      name="description"
+      content="Paperlyte is a lightning-fast, distraction-free note-taking app for people who think faster than most tools can keep up."
+    />
+    <!-- Self-hosted fonts for security -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/Inter-Variable-v2.woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/PlayfairDisplay-Variable.woff2"
+      crossorigin
+    />
+    <style>
+      /* Self-hosted Inter Variable Font */
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 100 900;
+        font-display: swap;
+        src: url('/fonts/Inter-Variable-v2.woff2') format('woff2-variations');
+        font-named-instance: 'Regular';
+      }
+
+      /* Self-hosted Playfair Display Variable Font */
+      @font-face {
+        font-family: 'Playfair Display';
+        font-style: normal;
+        font-weight: 400 900;
+        font-display: swap;
+        src: url('/fonts/PlayfairDisplay-Variable.woff2') format('woff2-variations');
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --color-primary: #1a1a1a;
+        --color-background: #ffffff;
+        --color-surface: #f9fafb;
+        --color-text: #111827;
+        --color-text-secondary: #6b7280;
+        --color-border: #e5e7eb;
+      }
+      body {
+        font-family:
+          'Inter',
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          sans-serif;
+        line-height: 1.6;
+        color: var(--color-text);
+        background: var(--color-background);
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+      }
+      .back-link {
+        display: inline-block;
+        color: var(--color-primary);
+        text-decoration: none;
+        margin-bottom: 1rem;
+        font-weight: 500;
+      }
+      .back-link:hover {
+        text-decoration: underline;
+      }
+      header {
+        margin-bottom: 3rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid var(--color-border);
+      }
+      h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: var(--color-text);
+      }
+      h1 em {
+        font-style: italic;
+      }
+      .tagline {
+        color: var(--color-text-secondary);
+        font-size: 1.1rem;
+      }
+      h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin: 2.5rem 0 1rem;
+        color: var(--color-text);
+      }
+      p {
+        margin-bottom: 1rem;
+        color: var(--color-text-secondary);
+      }
+      ul {
+        margin: 1rem 0 1rem 1.5rem;
+        color: var(--color-text-secondary);
+      }
+      li {
+        margin-bottom: 0.5rem;
+      }
+      strong {
+        color: var(--color-text);
+        font-weight: 600;
+      }
+      .status-note {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: 0.5rem;
+        padding: 1rem 1.25rem;
+        margin: 1.5rem 0;
+        font-size: 0.95rem;
+      }
+      footer {
+        margin-top: 4rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--color-border);
+        text-align: center;
+        color: var(--color-text-secondary);
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="/" class="back-link">← Back to Paperlyte</a>
+
+      <header>
+        <h1>Your thoughts, <em>unchained</em>.</h1>
+        <p class="tagline">Why we're building Paperlyte</p>
+      </header>
+
+      <main>
+        <p>
+          Paperlyte is a note-taking app for people who are frustrated with overly complex tools
+          like Notion, Evernote, and OneNote. Our mission is to provide a
+          <strong>lightning-fast</strong>, <strong>beautifully simple</strong> experience that
+          gets out of your way and lets you focus on what matters: your thoughts.
+        </p>
+
+        <div class="status-note">
+          <strong>Where we are:</strong> Paperlyte is currently in development. This site is our
+          waitlist &mdash; join it to be the first to hear when we launch.
+        </div>
+
+        <h2>What makes Paperlyte different</h2>
+        <ul>
+          <li>
+            <strong>Zero-Lag Typing:</strong> Sub-10ms keystroke response so typing feels instant,
+            even in large docs
+          </li>
+          <li>
+            <strong>Tag-Based Organization:</strong> Inline #tags instead of rigid folder
+            hierarchies
+          </li>
+          <li>
+            <strong>Cross-Platform Sync:</strong> Mac, Windows, Linux, iOS, Android, and web
+          </li>
+          <li>
+            <strong>Distraction-Free Writing:</strong> An interface that disappears when you start
+            typing
+          </li>
+          <li>
+            <strong>Private by Design:</strong> Local-first architecture with optional end-to-end
+            encrypted sync
+          </li>
+          <li>
+            <strong>Offline-First:</strong> Core writing and organization work fully offline, and
+            sync when you're back online
+          </li>
+        </ul>
+
+        <h2>Get in touch</h2>
+        <p>
+          Questions, feedback, or just want to say hello? Reach us at
+          <a href="mailto:hello@paperlyte.com">hello@paperlyte.com</a>.
+        </p>
+      </main>
+
+      <footer>
+        <p>&copy; <span id="year"></span> Paperlyte. All rights reserved.</p>
+      </footer>
+    </div>
+    <script nonce="CSP_NONCE">
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>

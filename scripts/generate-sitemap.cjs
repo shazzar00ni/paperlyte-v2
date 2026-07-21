@@ -59,6 +59,18 @@ const pages = [
     changefreq: 'monthly',
     priority: '0.5',
   },
+  {
+    url: `${DOMAIN}/about.html`,
+    file: path.join(__dirname, '../public/about.html'),
+    changefreq: 'monthly',
+    priority: '0.6',
+  },
+  {
+    url: `${DOMAIN}/blog.html`,
+    file: path.join(__dirname, '../public/blog.html'),
+    changefreq: 'weekly',
+    priority: '0.6',
+  },
 ];
 
 /**

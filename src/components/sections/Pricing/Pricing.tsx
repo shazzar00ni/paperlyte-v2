@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { Section } from '@components/layout/Section'
 import { AnimatedElement } from '@components/ui/AnimatedElement'
 import { Button } from '@components/ui/Button'
 import { Icon } from '@components/ui/Icon'
+import { WaitlistModal } from '@components/ui/WaitlistModal'
 import { PRICING_PLANS } from '@constants/pricing'
 import styles from './Pricing.module.css'
 
@@ -19,6 +21,8 @@ import styles from './Pricing.module.css'
  * ```
  */
 export const Pricing = (): React.ReactElement => {
+  const [isWaitlistModalOpen, setIsWaitlistModalOpen] = useState(false)
+
   return (
     <Section id="pricing" background="surface">
       <div className={styles.header}>
@@ -88,6 +92,7 @@ export const Pricing = (): React.ReactElement => {
                 size="large"
                 className={styles.ctaButton}
                 ariaLabel={`${plan.ctaText} for ${plan.name} plan`}
+                onClick={() => setIsWaitlistModalOpen(true)}
               >
                 {plan.ctaText}
               </Button>
@@ -104,6 +109,11 @@ export const Pricing = (): React.ReactElement => {
           </p>
         </div>
       </AnimatedElement>
+
+      <WaitlistModal
+        isOpen={isWaitlistModalOpen}
+        onClose={() => setIsWaitlistModalOpen(false)}
+      />
     </Section>
   )
 }

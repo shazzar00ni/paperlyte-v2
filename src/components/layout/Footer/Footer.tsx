@@ -76,16 +76,14 @@ export const Footer = (): React.ReactElement => {
                   </a>
                 </li>
                 <li>
-                  <span className={styles.linkComingSoon}>
+                  <a href="/about.html" className={styles.link}>
                     About
-                    <span className="sr-only"> (coming soon)</span>
-                  </span>
+                  </a>
                 </li>
                 <li>
-                  <span className={styles.linkComingSoon}>
+                  <a href="/blog.html" className={styles.link}>
                     Blog
-                    <span className="sr-only"> (coming soon)</span>
-                  </span>
+                  </a>
                 </li>
               </ul>
             </div>

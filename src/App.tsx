@@ -16,6 +16,9 @@ const Statistics = lazy(() =>
 const Comparison = lazy(() =>
   import('@components/sections/Comparison').then((m) => ({ default: m.Comparison }))
 )
+const Pricing = lazy(() =>
+  import('@components/sections/Pricing').then((m) => ({ default: m.Pricing }))
+)
 const Testimonials = lazy(() =>
   import('@components/sections/Testimonials').then((m) => ({ default: m.Testimonials }))
 )
@@ -62,6 +65,11 @@ function App() {
         <ErrorBoundary fallback={<></>}>
           <Suspense fallback={null}>
             <Comparison />
+          </Suspense>
+        </ErrorBoundary>
+        <ErrorBoundary fallback={<></>}>
+          <Suspense fallback={null}>
+            <Pricing />
           </Suspense>
         </ErrorBoundary>
         <ErrorBoundary fallback={<></>}>

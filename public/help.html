@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Help Center - Paperlyte</title>
+    <meta
+      name="description"
+      content="Paperlyte Help Center - Answers about getting started, the waitlist, features, privacy, and troubleshooting."
+    />
+    <!-- Self-hosted fonts for security -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/Inter-Variable-v2.woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/PlayfairDisplay-Variable.woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="/help.css" />
+  </head>
+  <body>
+    <div class="container">
+      <a href="/" class="back-link">← Back to Paperlyte</a>
+
+      <header>
+        <h1>Help Center</h1>
+        <p class="subtitle">
+          Answers to common questions about getting started, the waitlist, features, and privacy.
+        </p>
+        <form class="search" role="search" id="help-search-form">
+          <label for="help-search" class="visually-hidden">Search help articles</label>
+          <input
+            type="search"
+            id="help-search"
+            placeholder="Search help articles…"
+            autocomplete="off"
+          />
+        </form>
+        <p class="search-status" id="search-status" aria-live="polite"></p>
+      </header>
+
+      <nav class="toc" aria-label="Help topics">
+        <h2>Browse by topic</h2>
+        <ul>
+          <li><a href="#getting-started">Getting Started</a></li>
+          <li><a href="#waitlist">Waitlist &amp; Early Access</a></li>
+          <li><a href="#features">Features &amp; Platforms</a></li>
+          <li><a href="#privacy">Privacy &amp; Data</a></li>
+          <li><a href="#troubleshooting">Troubleshooting</a></li>
+        </ul>
+      </nav>
+
+      <main id="articles">
+        <section class="category" id="getting-started">
+          <h2>Getting Started</h2>
+          <div class="article">
+            <h3>What is Paperlyte?</h3>
+            <p>
+              Paperlyte is a lightning-fast, distraction-free note-taking app. Instead of folders
+              and rigid hierarchies, you organize notes with inline #tags, and every keystroke
+              responds in under 10ms — even in large documents.
+            </p>
+          </div>
+          <div class="article">
+            <h3>When does Paperlyte launch?</h3>
+            <p>
+              We're in active development and will announce the launch date to waitlist members
+              first. Waitlist members also get early access, roughly two weeks before general
+              availability.
+            </p>
+          </div>
+          <div class="article">
+            <h3>Is there a cost to join the waitlist?</h3>
+            <p>
+              No. Joining the waitlist is free and only requires your email address. Waitlist
+              members lock in 50% off the paid plan for life.
+            </p>
+          </div>
+        </section>
+
+        <section class="category" id="waitlist">
+          <h2>Waitlist &amp; Early Access</h2>
+          <div class="article">
+            <h3>How do I join the waitlist?</h3>
+            <p>
+              Use the email form on the homepage. You'll get a confirmation, and we'll email you
+              when it's your turn for early access.
+            </p>
+          </div>
+          <div class="article">
+            <h3>I didn't get a confirmation email — what now?</h3>
+            <p>
+              Check your spam or promotions folder first. If it's not there after a few minutes,
+              email
+              <a href="mailto:support@paperlyte.com">support@paperlyte.com</a>
+              and we'll confirm your signup manually.
+            </p>
+          </div>
+          <div class="article">
+            <h3>I signed up with the wrong email address. Can I change it?</h3>
+            <p>
+              Yes — email <a href="mailto:support@paperlyte.com">support@paperlyte.com</a>
+              from either address and we'll update your waitlist entry.
+            </p>
+          </div>
+          <div class="article">
+            <h3>How can I move up the waitlist?</h3>
+            <p>
+              Early access is currently granted in signup order. We may add referral perks closer
+              to launch — waitlist members will be notified first if that changes.
+            </p>
+          </div>
+        </section>
+
+        <section class="category" id="features">
+          <h2>Features &amp; Platforms</h2>
+          <div class="article">
+            <h3>What platforms will Paperlyte support?</h3>
+            <p>
+              At launch: a responsive web app that works on any device. Native iOS and Android
+              apps are planned for shortly after, with full offline sync. The web app already
+              works well on Mac, Windows, and Linux.
+            </p>
+          </div>
+          <div class="article">
+            <h3>Does Paperlyte work offline?</h3>
+            <p>
+              Yes. Core writing and organization work fully offline, and your notes sync
+              automatically once you're back online.
+            </p>
+          </div>
+          <div class="article">
+            <h3>How is Paperlyte different from Notion, Evernote, or Obsidian?</h3>
+            <p>
+              Speed and simplicity. Paperlyte loads and responds faster than tools that bundle
+              databases, wikis, and collaboration into one app. We removed features instead of
+              adding them — Paperlyte does one thing: capture your thoughts, instantly.
+            </p>
+          </div>
+          <div class="article">
+            <h3>Can I export my notes?</h3>
+            <p>
+              Always. Export any note, or all of them, as Markdown at any time. There's no
+              lock-in.
+            </p>
+          </div>
+        </section>
+
+        <section class="category" id="privacy">
+          <h2>Privacy &amp; Data</h2>
+          <div class="article">
+            <h3>How is my data protected?</h3>
+            <p>
+              Notes are encrypted in transit with TLS and encrypted at rest on our servers.
+              End-to-end encryption — so even we can't read your notes — is on our roadmap ahead
+              of public launch. We never sell your data.
+            </p>
+          </div>
+          <div class="article">
+            <h3>Where can I read the full privacy policy?</h3>
+            <p>
+              See our <a href="/privacy.html">Privacy Policy</a> for the complete details on data
+              collection, storage, and your rights.
+            </p>
+          </div>
+        </section>
+
+        <section class="category" id="troubleshooting">
+          <h2>Troubleshooting</h2>
+          <div class="article">
+            <h3>The site looks broken or a button isn't responding.</h3>
+            <p>
+              Try a hard refresh (Ctrl/Cmd + Shift + R) to clear a stale cached version. If the
+              problem persists, let us know what browser and device you're using so we can
+              investigate.
+            </p>
+          </div>
+          <div class="article">
+            <h3>Dark mode isn't matching my system preference.</h3>
+            <p>
+              Use the sun/moon toggle in the site header to switch themes manually — your choice
+              is remembered on this device.
+            </p>
+          </div>
+          <div class="article">
+            <h3>I found a bug or something looks wrong.</h3>
+            <p>
+              Please report it in our
+              <a
+                href="https://github.com/shazzar00ni/paperlyte-v2/issues"
+                target="_blank"
+                rel="noopener noreferrer"
+                >GitHub Issues</a
+              >
+              (opens in new tab), or email
+              <a href="mailto:support@paperlyte.com">support@paperlyte.com</a>.
+            </p>
+          </div>
+        </section>
+      </main>
+
+      <div class="contact-card">
+        <h2>Still stuck?</h2>
+        <p>
+          Ask the community or reach the team directly — we read every message and typically
+          respond within 24 hours.
+        </p>
+        <div class="button-row">
+          <a class="button button-primary" href="/community.html">Visit Community Forum</a>
+          <a class="button button-secondary" href="mailto:support@paperlyte.com"
+            >Email Support</a
+          >
+        </div>
+      </div>
+
+      <footer>
+        <p>&copy; <span id="footer-year"></span> Paperlyte. All rights reserved.</p>
+      </footer>
+    </div>
+    <script src="/help.js" nonce="CSP_NONCE"></script>
+  </body>
+</html>

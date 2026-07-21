@@ -59,6 +59,18 @@ const pages = [
     changefreq: 'monthly',
     priority: '0.5',
   },
+  {
+    url: `${DOMAIN}/help.html`,
+    file: path.join(__dirname, '../public/help.html'),
+    changefreq: 'monthly',
+    priority: '0.6',
+  },
+  {
+    url: `${DOMAIN}/community.html`,
+    file: path.join(__dirname, '../public/community.html'),
+    changefreq: 'monthly',
+    priority: '0.6',
+  },
 ];
 
 /**

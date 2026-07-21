@@ -204,11 +204,23 @@ export const FAQ = (): React.ReactElement => {
         <div className={styles.footer}>
           <p className={styles.footerText}>
             Still have questions? Check out our{' '}
-            <a href="#help" className={styles.link}>
+            <a
+              href="/help.html"
+              className={styles.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Help Center (opens in new tab)"
+            >
               Help Center
             </a>{' '}
             or{' '}
-            <a href="#community" className={styles.link}>
+            <a
+              href="/community.html"
+              className={styles.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Community Forum (opens in new tab)"
+            >
               Community Forum
             </a>
             .

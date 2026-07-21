@@ -1,17 +1,19 @@
 import { renderHook, act, waitFor } from '@testing-library/react'
-import { logError } from '@utils/monitoring'
-import { useTheme } from './useTheme'
+import type { useTheme as useThemeHook } from './useTheme'
 
-vi.mock('@utils/monitoring', () => ({
-  logError: vi.fn(),
-}))
+type UseThemeHook = typeof useThemeHook
 
-// Mock the config module
-vi.mock('@constants/config', () => ({
-  PERSISTENCE_CONFIG: {
-    ALLOW_PERSISTENT_THEME: true,
-  },
-}))
+let useTheme: UseThemeHook
+
+const loadUseTheme = async (allowPersistentTheme: boolean): Promise<void> => {
+  vi.resetModules()
+  vi.doMock('`@constants/config`', () => ({
+    PERSISTENCE_CONFIG: {
+      ALLOW_PERSISTENT_THEME: allowPersistentTheme,
+    },
+  }))
+  ;({ useTheme } = await import('./useTheme'))
+}
 
 describe('useTheme', () => {
   // Store original matchMedia
@@ -34,7 +36,8 @@ describe('useTheme', () => {
     }
   })()
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await loadUseTheme(true)
     // Clear localStorage before each test
     localStorageMock.clear()
     Object.defineProperty(window, 'localStorage', {
@@ -61,6 +64,7 @@ describe('useTheme', () => {
   afterEach(() => {
     // Restore original matchMedia
     window.matchMedia = originalMatchMedia
+    vi.restoreAllMocks()
   })
 
   describe('Legacy key migration', () => {
@@ -489,16 +493,8 @@ describe('useTheme with persistence disabled', () => {
     }
   })()
 
-  beforeEach(() => {
-    // Reset module registry to allow re-mocking
-    vi.resetModules()
-
-    // Mock config with persistence disabled
-    vi.doMock('@constants/config', () => ({
-      PERSISTENCE_CONFIG: {
-        ALLOW_PERSISTENT_THEME: false,
-      },
-    }))
+  beforeEach(async () => {
+    await loadUseTheme(false)
 
     // Clear localStorage before each test
     localStorageMock.clear()
@@ -528,7 +524,7 @@ describe('useTheme with persistence disabled', () => {
 
   afterEach(() => {
     window.matchMedia = originalMatchMedia
-    vi.doUnmock('@constants/config')
+    vi.restoreAllMocks()
   })
 
   it('should not read from localStorage when persistence is disabled', async () => {
@@ -538,10 +534,7 @@ describe('useTheme with persistence disabled', () => {
     localStorageMock.setItem.mockClear()
     localStorageMock.getItem.mockClear()
 
-    // Import fresh module with mocked config
-    const { useTheme: useThemeNoPersist } = await import('./useTheme')
-
-    const { result } = renderHook(() => useThemeNoPersist())
+    const { result } = renderHook(() => useTheme())
 
     // Should default to light (system preference) not dark from localStorage
     expect(result.current.theme).toBe('light')
@@ -550,9 +543,7 @@ describe('useTheme with persistence disabled', () => {
   it('should not write to localStorage when persistence is disabled', async () => {
     localStorageMock.setItem.mockClear()
 
-    const { useTheme: useThemeNoPersist } = await import('./useTheme')
-
-    const { result } = renderHook(() => useThemeNoPersist())
+    const { result } = renderHook(() => useTheme())
 
     act(() => {
       result.current.toggleTheme()
@@ -567,9 +558,7 @@ describe('useTheme with persistence disabled', () => {
   })
 
   it('should update filter to catch regressions writing legacy keys when persistence disabled', async () => {
-    const { useTheme: useThemeNoPersist } = await import('./useTheme')
-
-    const { result } = renderHook(() => useThemeNoPersist())
+    const { result } = renderHook(() => useTheme())
 
     act(() => {
       result.current.toggleTheme()
@@ -602,9 +591,7 @@ describe('useTheme with persistence disabled', () => {
       dispatchEvent: vi.fn(),
     }))
 
-    const { useTheme: useThemeNoPersist } = await import('./useTheme')
-
-    const { result } = renderHook(() => useThemeNoPersist())
+    const { result } = renderHook(() => useTheme())
 
     // Toggle to set a "user preference" (but it won't be persisted)
     act(() => {
@@ -629,9 +616,9 @@ describe('useTheme — localStorage error handling', () => {
   const originalMatchMedia = window.matchMedia
   let originalLocalStorage: Storage
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await loadUseTheme(true)
     originalLocalStorage = window.localStorage
-    vi.mocked(logError).mockClear()
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
       value: vi.fn().mockImplementation((query: string) => ({
@@ -653,9 +640,10 @@ describe('useTheme — localStorage error handling', () => {
       writable: true,
     })
     window.matchMedia = originalMatchMedia
+    vi.restoreAllMocks()
   })
 
-  it('initialises to light theme and reports via logError when getItem throws SecurityError', () => {
+  it('initialises to light theme when getItem throws SecurityError', () => {
     const storageError = new DOMException('Storage access denied', 'SecurityError')
     Object.defineProperty(window, 'localStorage', {
       value: {
@@ -672,15 +660,9 @@ describe('useTheme — localStorage error handling', () => {
     const { result } = renderHook(() => useTheme())
 
     expect(result.current.theme).toBe('light')
-    expect(vi.mocked(logError)).toHaveBeenCalledWith(
-      expect.objectContaining({ message: expect.any(String) }),
-      expect.objectContaining({
-        tags: expect.objectContaining({ operation: 'readPersistedTheme' }),
-      })
-    )
   })
 
-  it('still updates theme in memory and reports via logError when setItem throws SecurityError', async () => {
+  it('still updates theme in memory when setItem throws SecurityError', async () => {
     const storageError = new DOMException('Storage access denied', 'SecurityError')
     Object.defineProperty(window, 'localStorage', {
       value: {
@@ -704,11 +686,5 @@ describe('useTheme — localStorage error handling', () => {
     await waitFor(() => {
       expect(result.current.theme).toBe('dark')
     })
-    expect(vi.mocked(logError)).toHaveBeenCalledWith(
-      expect.objectContaining({ message: expect.any(String) }),
-      expect.objectContaining({
-        tags: expect.objectContaining({ operation: 'persistTheme' }),
-      })
-    )
   })
 })

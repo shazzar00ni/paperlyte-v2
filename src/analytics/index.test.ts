@@ -3,6 +3,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { mockScrollAPI } from '../test/analytics-helpers'
 import { analytics } from './index'
 import type { AnalyticsConfig } from './types'
 
@@ -529,31 +530,26 @@ describe('analytics/index', () => {
       const script = document.querySelector('script[data-domain]') as HTMLScriptElement
       script.onload?.(new Event('load'))
 
-      // Mock scroll properties
-      Object.defineProperty(document.documentElement, 'scrollHeight', {
-        writable: true,
-        value: 1000,
-      })
-      Object.defineProperty(document.documentElement, 'clientHeight', {
-        writable: true,
-        value: 500,
-      })
-      Object.defineProperty(window, 'scrollY', {
-        writable: true,
-        value: 250,
+      const scrollApi = mockScrollAPI({
+        scrollY: 250,
+        scrollHeight: 1000,
+        clientHeight: 500,
       })
 
-      // Trigger scroll
-      window.dispatchEvent(new Event('scroll'))
-      vi.advanceTimersByTime(250)
+      try {
+        // Trigger scroll
+        window.dispatchEvent(new Event('scroll'))
+        vi.advanceTimersByTime(250)
 
-      // Should track scroll_depth event
-      expect(window.plausible).toHaveBeenCalledWith('scroll_depth', {
-        props: { depth: expect.any(Number) },
-      })
-
-      analytics.disable()
-      vi.useRealTimers()
+        // Should track scroll_depth event
+        expect(window.plausible).toHaveBeenCalledWith('scroll_depth', {
+          props: { depth: expect.any(Number) },
+        })
+      } finally {
+        scrollApi.cleanup()
+        analytics.disable()
+        vi.useRealTimers()
+      }
     })
   })
 })

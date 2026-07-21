@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@sentry/react": "^10.63.0",
+    "@supabase/supabase-js": "^2.110.7",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },

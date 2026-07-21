@@ -1,6 +1,7 @@
 import type { Handler, HandlerEvent, HandlerResponse } from "@netlify/functions";
 import { z } from "zod";
-import { validateEmail } from "../../src/utils/validation";
+import { validateEmail, validateName, sanitizeInput } from "../../src/utils/validation";
+import { getSupabaseClient } from "./utils/supabaseClient";
 
 // In-memory rate limit store (resets on cold start)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
@@ -10,6 +11,7 @@ const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
 const MAX_STORE_SIZE = 1000;
 
 interface SubscribeRequest {
+  name?: unknown;
   email?: unknown;
 }
 
@@ -239,11 +241,54 @@ function validateEmailInput(
   return { normalizedEmail };
 }
 
+/**
+ * Validates and normalises a name field from the request body.
+ * @param name - The raw name value (may be any type)
+ * @returns An object with `normalizedName` on success, or `error` on failure
+ */
+function validateNameInput(
+  name: unknown
+): { error: string } | { normalizedName: string } {
+  if (!name || typeof name !== "string") {
+    return { error: "Name is required" };
+  }
+  const trimmedName = name.trim();
+  const validation = validateName(trimmedName);
+  if (!validation.isValid) {
+    return { error: validation.error ?? "Invalid name" };
+  }
+  return { normalizedName: sanitizeInput(trimmedName) };
+}
+
+// --- Supabase ---
+
+/**
+ * Persists a waitlist signup to Supabase for our own records. Best-effort:
+ * failures are logged but never block the ConvertKit subscription flow or
+ * the client response, since Supabase is a supplementary data store here,
+ * not the system of record for email delivery.
+ * @param name - The subscriber's name
+ * @param email - The subscriber's normalized email
+ */
+async function saveWaitlistSignup(name: string, email: string): Promise<void> {
+  const supabase = getSupabaseClient();
+  if (!supabase) return;
+
+  const { error } = await supabase
+    .from("waitlist_signups")
+    .upsert({ name, email }, { onConflict: "email", ignoreDuplicates: true });
+
+  if (error) {
+    console.error("Failed to save waitlist signup to Supabase:", error.message);
+  }
+}
+
 // --- Handler ---
 
 /**
  * Processes a validated POST subscription request: enforces rate-limiting,
- * parses the body, validates the email, and calls ConvertKit.
+ * parses the body, validates name and email, calls ConvertKit, and persists
+ * the signup to Supabase.
  * @param event - The incoming Netlify handler event
  * @param headers - Pre-built CORS response headers to include in all responses
  */
@@ -271,6 +316,15 @@ async function processSubscription(
     };
   }
 
+  const nameResult = validateNameInput(body.name);
+  if ("error" in nameResult) {
+    return {
+      statusCode: 400,
+      headers,
+      body: JSON.stringify({ error: nameResult.error }),
+    };
+  }
+
   const emailResult = validateEmailInput(body.email);
   if ("error" in emailResult) {
     return {
@@ -283,6 +337,7 @@ async function processSubscription(
   try {
     await subscribeToConvertKit(emailResult.normalizedEmail);
     console.log("Successfully subscribed user to newsletter");
+    await saveWaitlistSignup(nameResult.normalizedName, emailResult.normalizedEmail);
     return {
       statusCode: 200,
       headers,

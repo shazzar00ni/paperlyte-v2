@@ -105,11 +105,12 @@ describe('CTA', () => {
       expect(dialog).toHaveAttribute('aria-labelledby', 'waitlist-modal-title')
     })
 
-    it('lets the user submit their email and join the waitlist from within the modal', async () => {
+    it('lets the user submit their name and email and join the waitlist from within the modal', async () => {
       const user = userEvent.setup()
       render(<CTA />)
 
       await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+      await user.type(screen.getByLabelText('Full name'), 'Ada Lovelace')
       await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
       await user.click(screen.getByRole('dialog').querySelector('button[type="submit"]')!)
 
@@ -119,7 +120,7 @@ describe('CTA', () => {
       expect(fetchMock).toHaveBeenCalledWith('/.netlify/functions/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: 'test@example.com' }),
+        body: JSON.stringify({ name: 'Ada Lovelace', email: 'test@example.com' }),
         signal: expect.any(AbortSignal),
       })
     })

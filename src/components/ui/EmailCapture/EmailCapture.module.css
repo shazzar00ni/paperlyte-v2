@@ -29,6 +29,11 @@
   pointer-events: none;
 }
 
+.nameGroup {
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
 /* Input Group */
 .inputGroup {
   display: flex;

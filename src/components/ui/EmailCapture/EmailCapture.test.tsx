@@ -9,8 +9,11 @@ vi.mock('@utils/monitoring', () => ({ logError: vi.fn() }))
 const fillAndSubmit = async (
   user: ReturnType<typeof userEvent.setup>,
   email: string,
-  consent = true
+  { name = 'Ada Lovelace', consent = true }: { name?: string; consent?: boolean } = {}
 ) => {
+  if (name) {
+    await user.type(screen.getByLabelText('Full name'), name)
+  }
   await user.type(screen.getByLabelText('Email address'), email)
   if (consent) {
     await user.click(screen.getByRole('checkbox'))
@@ -27,9 +30,10 @@ describe('EmailCapture (ui)', () => {
   })
 
   describe('Rendering', () => {
-    it('renders the email input and submit button', () => {
+    it('renders the name input, email input, and submit button', () => {
       render(<EmailCapture />)
 
+      expect(screen.getByLabelText('Full name')).toBeInTheDocument()
       expect(screen.getByLabelText('Email address')).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /join waitlist/i })).toBeInTheDocument()
     })
@@ -57,10 +61,23 @@ describe('EmailCapture (ui)', () => {
   })
 
   describe('Validation', () => {
+    it('shows an error when submitting with an empty name', async () => {
+      const user = userEvent.setup()
+      render(<EmailCapture />)
+
+      await user.type(screen.getByLabelText('Email address'), 'test@example.com')
+      await user.click(screen.getByRole('button', { name: /join waitlist/i }))
+
+      await waitFor(() => {
+        expect(screen.getByRole('alert')).toBeInTheDocument()
+      })
+    })
+
     it('shows an error when submitting with an empty email', async () => {
       const user = userEvent.setup()
       render(<EmailCapture />)
 
+      await user.type(screen.getByLabelText('Full name'), 'Ada Lovelace')
       await user.click(screen.getByRole('button', { name: /join waitlist/i }))
 
       await waitFor(() => {
@@ -72,6 +89,7 @@ describe('EmailCapture (ui)', () => {
       const user = userEvent.setup()
       render(<EmailCapture />)
 
+      await user.type(screen.getByLabelText('Full name'), 'Ada Lovelace')
       await user.type(screen.getByLabelText('Email address'), 'not-an-email')
       await user.click(screen.getByRole('button', { name: /join waitlist/i }))
 
@@ -84,9 +102,7 @@ describe('EmailCapture (ui)', () => {
       const user = userEvent.setup()
       render(<EmailCapture />)
 
-      await user.type(screen.getByLabelText('Email address'), 'test@example.com')
-      // Do NOT tick the consent checkbox
-      await user.click(screen.getByRole('button', { name: /join waitlist/i }))
+      await fillAndSubmit(user, 'test@example.com', { consent: false })
 
       await waitFor(() => {
         expect(
@@ -95,10 +111,11 @@ describe('EmailCapture (ui)', () => {
       })
     })
 
-    it('sets aria-invalid on the input when there is an error', async () => {
+    it('sets aria-invalid on the email input when there is an email error', async () => {
       const user = userEvent.setup()
       render(<EmailCapture />)
 
+      await user.type(screen.getByLabelText('Full name'), 'Ada Lovelace')
       await user.type(screen.getByLabelText('Email address'), 'bad')
       await user.click(screen.getByRole('button', { name: /join waitlist/i }))
 
@@ -234,6 +251,7 @@ describe('EmailCapture (ui)', () => {
       const honeypot = document.querySelector<HTMLInputElement>('input[name="website"]')!
       fireEvent.change(honeypot, { target: { value: 'spambot' } })
 
+      await user.type(screen.getByLabelText('Full name'), 'Ada Lovelace')
       await user.type(screen.getByLabelText('Email address'), 'test@example.com')
       await user.click(screen.getByRole('checkbox'))
       await user.click(screen.getByRole('button', { name: /join waitlist/i }))

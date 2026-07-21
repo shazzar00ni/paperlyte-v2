@@ -4,6 +4,17 @@ import userEvent from '@testing-library/user-event'
 import { EmailCapture } from './EmailCapture'
 import { WAITLIST_COUNT } from '@/constants/waitlist'
 
+const fillAndSubmit = async (
+  user: ReturnType<typeof userEvent.setup>,
+  { name = 'Ada Lovelace', email }: { name?: string; email: string }
+) => {
+  if (name) {
+    await user.type(screen.getByLabelText('Full name'), name)
+  }
+  await user.type(screen.getByPlaceholderText('your@email.com'), email)
+  await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+}
+
 describe('EmailCapture Section', () => {
   let fetchMock: ReturnType<typeof vi.fn>
 
@@ -25,8 +36,9 @@ describe('EmailCapture Section', () => {
     expect(screen.getByText(`Join ${WAITLIST_COUNT} people on the waitlist`)).toBeInTheDocument()
   })
 
-  it('renders the form with email input and submit button', () => {
+  it('renders the form with name input, email input, and submit button', () => {
     render(<EmailCapture />)
+    expect(screen.getByLabelText('Full name')).toBeInTheDocument()
     expect(screen.getByPlaceholderText('your@email.com')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Join the Waitlist/i })).toBeInTheDocument()
   })
@@ -50,11 +62,7 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
-    const emailInput = screen.getByPlaceholderText('your@email.com')
-    const submitButton = screen.getByRole('button', { name: /Join the Waitlist/i })
-
-    await user.type(emailInput, 'test@example.com')
-    await user.click(submitButton)
+    await fillAndSubmit(user, { email: 'test@example.com' })
 
     await waitFor(() => {
       expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()
@@ -64,7 +72,7 @@ describe('EmailCapture Section', () => {
     expect(fetchMock).toHaveBeenCalledWith('/.netlify/functions/subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: 'test@example.com' }),
+      body: JSON.stringify({ name: 'Ada Lovelace', email: 'test@example.com' }),
       signal: expect.any(AbortSignal),
     })
   })
@@ -79,8 +87,7 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
-    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
-    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    await fillAndSubmit(user, { email: 'test@example.com' })
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent(/Couldn't add you to the waitlist/i)
@@ -97,8 +104,7 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
-    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
-    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    await fillAndSubmit(user, { email: 'test@example.com' })
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent('Invalid email address')
@@ -115,8 +121,7 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
-    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
-    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    await fillAndSubmit(user, { email: 'test@example.com' })
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent(/Too many requests/)
@@ -133,8 +138,7 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
-    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
-    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    await fillAndSubmit(user, { email: 'test@example.com' })
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent(/Couldn't add you to the waitlist/i)
@@ -151,8 +155,7 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
-    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
-    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    await fillAndSubmit(user, { email: 'test@example.com' })
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent(
@@ -171,8 +174,7 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
-    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
-    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    await fillAndSubmit(user, { email: 'test@example.com' })
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent(
@@ -187,8 +189,7 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
-    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
-    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    await fillAndSubmit(user, { email: 'test@example.com' })
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent(/Connection error. Check your internet/)
@@ -201,6 +202,25 @@ describe('EmailCapture Section', () => {
     expect(emailInput.required).toBe(true)
   })
 
+  it('validates name input is required', () => {
+    render(<EmailCapture />)
+    const nameInput = screen.getByLabelText('Full name') as HTMLInputElement
+    expect(nameInput.required).toBe(true)
+  })
+
+  it('shows a client-side error and does not call fetch when name is missing', async () => {
+    const user = userEvent.setup()
+    render(<EmailCapture />)
+
+    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
+    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent(/at least 2 characters/i)
+    })
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
   describe('Error handling', () => {
     afterEach(() => {
       vi.restoreAllMocks()
@@ -211,8 +231,7 @@ describe('EmailCapture Section', () => {
 
       const user = userEvent.setup()
       render(<EmailCapture />)
-      await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
-      await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+      await fillAndSubmit(user, { email: 'test@example.com' })
 
       await waitFor(() => {
         expect(screen.getByRole('alert')).toHaveTextContent(/Connection error/i)
@@ -224,8 +243,7 @@ describe('EmailCapture Section', () => {
 
       const user = userEvent.setup()
       render(<EmailCapture />)
-      await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
-      await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+      await fillAndSubmit(user, { email: 'test@example.com' })
 
       await waitFor(() => {
         expect(screen.getByRole('alert')).toHaveTextContent(/doesn't look right/i)
@@ -244,8 +262,7 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
-    await user.type(screen.getByPlaceholderText('your@email.com'), 'user..name@example.com')
-    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    await fillAndSubmit(user, { email: 'user..name@example.com' })
 
     await waitFor(() => {
       const emailInput = screen.getByPlaceholderText('your@email.com')
@@ -259,10 +276,8 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
-    const emailInput = screen.getByPlaceholderText('your@email.com')
     // Type an invalid email that passes HTML5 type="email" but fails our validator
-    await user.type(emailInput, 'user..name@example.com')
-    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    await fillAndSubmit(user, { email: 'user..name@example.com' })
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent(/valid email address/)
@@ -284,6 +299,7 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
+    await user.type(screen.getByLabelText('Full name'), 'Ada Lovelace')
     await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
 
     // Click but don't await — submission is in-flight
@@ -305,8 +321,7 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
-    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
-    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    await fillAndSubmit(user, { email: 'test@example.com' })
 
     await waitFor(() => {
       expect(screen.getByText(/You're on the list!/)).toBeInTheDocument()
@@ -322,8 +337,7 @@ describe('EmailCapture Section', () => {
     const user = userEvent.setup()
     render(<EmailCapture />)
 
-    await user.type(screen.getByPlaceholderText('your@email.com'), 'test@example.com')
-    await user.click(screen.getByRole('button', { name: /Join the Waitlist/i }))
+    await fillAndSubmit(user, { email: 'test@example.com' })
 
     await waitFor(() => {
       const heading = screen.getByRole('heading', { name: /You're on the list!/i })

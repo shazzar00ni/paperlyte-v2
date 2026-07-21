@@ -101,6 +101,10 @@
   margin: 0;
 }
 
+.nameGroup {
+  margin-bottom: var(--spacing-sm);
+}
+
 .inputGroup {
   display: flex;
   flex-direction: column;

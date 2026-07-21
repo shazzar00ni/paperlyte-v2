@@ -260,6 +260,26 @@ function validateNameField(value: unknown): string | null {
   return null
 }
 
+/**
+ * Validates a person's name for waitlist/signup forms.
+ * Requires 2-100 characters after trimming.
+ *
+ * @param name - The name to validate
+ * @returns Validation result with isValid boolean and optional error message
+ *
+ * @example
+ * ```tsx
+ * const result = validateName('Ada Lovelace')
+ * if (!result.isValid) {
+ *   console.error(result.error)
+ * }
+ * ```
+ */
+export function validateName(name: string): EmailValidationResult {
+  const error = validateNameField(name)
+  return error ? { isValid: false, error } : { isValid: true }
+}
+
 /** Validate the acceptTerms field value; returns an error string or null. */
 function validateAcceptTermsField(value: unknown): string | null {
   if (typeof value !== 'boolean') return 'Accept terms must be a boolean'

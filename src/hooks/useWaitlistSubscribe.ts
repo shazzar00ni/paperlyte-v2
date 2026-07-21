@@ -1,9 +1,11 @@
 import { useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { logError } from '@utils/monitoring'
-import { validateEmail } from '@utils/validation'
+import { validateEmail, validateName } from '@utils/validation'
 
 interface UseWaitlistSubscribeResult {
+  name: string
+  setName: (name: string) => void
   email: string
   setEmail: (email: string) => void
   isSubmitted: boolean
@@ -19,6 +21,7 @@ interface UseWaitlistSubscribeResult {
  * that lets a user join the waitlist (the dedicated section and the CTA modal).
  */
 export function useWaitlistSubscribe(componentName: string): UseWaitlistSubscribeResult {
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -30,6 +33,7 @@ export function useWaitlistSubscribe(componentName: string): UseWaitlistSubscrib
 
   const reset = (): void => {
     abortControllerRef.current?.abort()
+    setName('')
     setEmail('')
     setIsSubmitted(false)
     setIsLoading(false)
@@ -40,7 +44,14 @@ export function useWaitlistSubscribe(componentName: string): UseWaitlistSubscrib
     e.preventDefault()
     setError(null)
 
+    const normalizedName = name.trim()
     const normalizedEmail = email.trim().toLowerCase()
+
+    const nameValidation = validateName(normalizedName)
+    if (!nameValidation.isValid) {
+      setError(nameValidation.error ?? 'Please enter your name.')
+      return
+    }
 
     const validation = validateEmail(normalizedEmail)
     if (!validation.isValid) {
@@ -58,7 +69,7 @@ export function useWaitlistSubscribe(componentName: string): UseWaitlistSubscrib
       const res = await fetch('/.netlify/functions/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: normalizedEmail }),
+        body: JSON.stringify({ name: normalizedName, email: normalizedEmail }),
         signal: abortController.signal,
       })
 
@@ -140,5 +151,5 @@ export function useWaitlistSubscribe(componentName: string): UseWaitlistSubscrib
     }
   }
 
-  return { email, setEmail, isSubmitted, isLoading, error, handleSubmit, reset }
+  return { name, setName, email, setEmail, isSubmitted, isLoading, error, handleSubmit, reset }
 }

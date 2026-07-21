@@ -63,7 +63,7 @@
     "postcss": "^8.5.18",
     "prettier": "^3.9.4",
     "sharp": "^0.34.5",
-    "terser": "^5.48.0",
+    "terser": "^5.49.0",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.62.1",
     "vite": "8.1.3",

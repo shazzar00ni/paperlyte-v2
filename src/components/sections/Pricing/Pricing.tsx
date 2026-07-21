@@ -110,10 +110,7 @@ export const Pricing = (): React.ReactElement => {
         </div>
       </AnimatedElement>
 
-      <WaitlistModal
-        isOpen={isWaitlistModalOpen}
-        onClose={() => setIsWaitlistModalOpen(false)}
-      />
+      <WaitlistModal isOpen={isWaitlistModalOpen} onClose={() => setIsWaitlistModalOpen(false)} />
     </Section>
   )
 }

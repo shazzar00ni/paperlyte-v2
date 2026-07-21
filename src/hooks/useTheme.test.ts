@@ -3,20 +3,13 @@ import type { useTheme as useThemeHook } from './useTheme'
 
 type UseThemeHook = typeof useThemeHook
 
-const testMocks = vi.hoisted(() => ({
-  allowPersistentTheme: true,
-}))
-
 let useTheme: UseThemeHook
 
 const loadUseTheme = async (allowPersistentTheme: boolean): Promise<void> => {
-  testMocks.allowPersistentTheme = allowPersistentTheme
   vi.resetModules()
-  vi.doMock('@constants/config', () => ({
+  vi.doMock('`@constants/config`', () => ({
     PERSISTENCE_CONFIG: {
-      get ALLOW_PERSISTENT_THEME() {
-        return testMocks.allowPersistentTheme
-      },
+      ALLOW_PERSISTENT_THEME: allowPersistentTheme,
     },
   }))
   ;({ useTheme } = await import('./useTheme'))

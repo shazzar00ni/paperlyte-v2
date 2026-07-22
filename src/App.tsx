@@ -57,30 +57,10 @@ function App() {
         <ErrorBoundary fallback={<></>}>
           <Suspense fallback={null}>
             <Statistics />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
             <Comparison />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
             <Testimonials />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
             <EmailCapture />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
             <FAQ />
-          </Suspense>
-        </ErrorBoundary>
-        <ErrorBoundary fallback={<></>}>
-          <Suspense fallback={null}>
             <CTA />
           </Suspense>
         </ErrorBoundary>

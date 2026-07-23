@@ -62,6 +62,7 @@
     "png-to-ico": "^3.0.2",
     "postcss": "^8.5.18",
     "prettier": "^3.9.5",
+    "serve": "^14.2.6",
     "sharp": "^0.34.5",
     "terser": "^5.49.0",
     "typescript": "~6.0.3",

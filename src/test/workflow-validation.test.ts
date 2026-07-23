@@ -284,22 +284,22 @@ describe('package-lock.json – picomatch dependency update', () => {
     expect(lockfile.packages).toHaveProperty('node_modules/picomatch')
   })
 
-  it('picomatch should be updated to version 4.0.4', () => {
-    expect(entry.version).toBe('4.0.4')
+  it('picomatch should be updated to version 4.0.5', () => {
+    expect(entry.version).toBe('4.0.5')
   })
 
   it('picomatch should NOT be the vulnerable version 4.0.3', () => {
     expect(entry.version).not.toBe('4.0.3')
   })
 
-  it('picomatch resolved URL should point to version 4.0.4', () => {
-    expect(entry.resolved).toContain('picomatch-4.0.4.tgz')
+  it('picomatch resolved URL should point to version 4.0.5', () => {
+    expect(entry.resolved).toContain('picomatch-4.0.5.tgz')
     expect(entry.resolved).not.toContain('picomatch-4.0.3.tgz')
   })
 
-  it('picomatch integrity hash should match the 4.0.4 release', () => {
+  it('picomatch integrity hash should match the 4.0.5 release', () => {
     expect(entry.integrity).toBe(
-      'sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A=='
+      'sha512-RvwwcruNjI1ncT5xRakeyS9Lf8lcItv34KD+aif+VH9kduAyfYBipGh12274xtenIPZ119/R9BdTBa8gAwSh0A=='
     )
   })
 
